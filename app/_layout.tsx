@@ -7,7 +7,7 @@ const RouteGuard = ({children}: {children: React.ReactNode}) => {
 
   useEffect(() => {
     if (!isAuth) {
-      router.replace("./auth")
+      setTimeout(() => router.replace("./auth"), 0);
     }
   })
 
@@ -18,7 +18,7 @@ export default function RootLayout() {
   return (
     <RouteGuard>
         <Stack>
-          
+          {/* <Stack.Screen name=""> */}
         </Stack>
     </RouteGuard>
   );
