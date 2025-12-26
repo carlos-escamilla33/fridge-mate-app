@@ -13,7 +13,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     const signUp = async (email: string, password: string): Promise<string | null> => {
         try {
             const result = await callAPI({
-                url: "/api/auth/register",
+                url: "api/auth/register",
                 method: "POST",
                 body: {email, password}
             });
@@ -27,7 +27,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     const signIn = async (email: string, password: string): Promise<string | null> => {
         try {
             const result = await callAPI({
-                url: "/api/auth/login",
+                url: "api/auth/login",
                 method: "POST",
                 body: {email, password}
             });
