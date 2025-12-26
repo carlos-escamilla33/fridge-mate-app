@@ -1,5 +1,5 @@
 import callAPI from "@/api";
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
 type AuthContextType = {
     // user: 
@@ -13,7 +13,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     const signUp = async (email: string, password: string): Promise<string | null> => {
         try {
             const result = await callAPI({
-                url: "api/auth/register",
+                url: "/api/auth/register",
                 method: "POST",
                 body: {email, password}
             });
@@ -46,5 +46,9 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
 }
 
 export function useAuth() {
-
+    const context = useContext(AuthContext);
+    if (context === undefined) {
+        throw new Error("useAuth must be inside of the AuthProvider");
+    }
+    return context;
 }
