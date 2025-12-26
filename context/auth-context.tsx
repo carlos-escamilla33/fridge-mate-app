@@ -1,3 +1,4 @@
+import callAPI from "@/api";
 import { createContext } from "react";
 
 type AuthContextType = {
@@ -9,16 +10,36 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default function AuthProvider({children}: {children: React.ReactNode}) {
-    const signUp = async (email: string, password: string) => {
+    const signUp = async (email: string, password: string): Promise<string | null> => {
         try {
-            await account
+            const result = await callAPI({
+                url: "api/auth/register",
+                method: "POST",
+                body: {email, password}
+            });
+            return result;
         } catch (err) {
-            
+            console.error("Signup failed", err);
+            return null;
+        }
+    }
+
+    const signIn = async (email: string, password: string): Promise<string | null> => {
+        try {
+            const result = await callAPI({
+                url: "/api/auth/login",
+                method: "POST",
+                body: {email, password}
+            });
+            return result;
+        } catch (err) {
+            console.log(err);
+            return null;
         }
     }
 
     return (
-        <AuthContext.Provider value={{user, signUp, signIn}}>
+        <AuthContext.Provider value={{signUp, signIn}}>
             {children}
         </AuthContext.Provider>
     )
