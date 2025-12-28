@@ -3,20 +3,29 @@ import { createContext, useContext } from "react";
 
 type AuthContextType = {
     // user: 
-    signUp: (email: string, password: string) => Promise<string | null>;
-    signIn: (email: string, password: string) => Promise<string| null>;
+    signUp: (email: string, password: string) => Promise<object | null>;
+    signIn: (email: string, password: string) => Promise<object | null>;
+}
+
+interface AuthSignUpResponse {
+  message: string ;
+  account: any;
+  profile: any;
+  accessToken: string;
+  refreshToken: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default function AuthProvider({children}: {children: React.ReactNode}) {
-    const signUp = async (email: string, password: string): Promise<string | null> => {
+    const signUp = async (email: string, password: string): Promise<object | null> => {
         try {
-            const result = await callAPI({
+            const result: AuthSignUpResponse = await callAPI({
                 url: "api/auth/register",
                 method: "POST",
                 body: {email, password}
             });
+            console.log(result);
             return result;
         } catch (err) {
             console.error("Signup failed", err);
@@ -24,7 +33,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
         }
     }
 
-    const signIn = async (email: string, password: string): Promise<string | null> => {
+    const signIn = async (email: string, password: string): Promise<object | null> => {
         try {
             const result = await callAPI({
                 url: "api/auth/login",

@@ -7,7 +7,7 @@ interface ApiParams {
     body?: Record<string, any>;
 }
 
-export default async function callAPI ({url, method, token, body}: ApiParams) {
+export default async function callAPI<T = any> ({url, method, token, body}: ApiParams): Promise<T> {
     try {
         const headers: Record<string, string> = {
             "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export default async function callAPI ({url, method, token, body}: ApiParams) {
             throw result.error;
         }
 
-        return result;
+        return result as T;
     } catch (err) {
         console.log(err);
         throw err;

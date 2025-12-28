@@ -28,9 +28,10 @@ export default function AuthScreen() {
     setError(null);
 
     if (isSignUp) {
-      const err = await signUp(email, password);
-      if (err) {
-        setError(err);
+      const res = await signUp(email, password);
+      console.log(res);
+      if (res.message != "You Sucessfully Registered!") {
+        setError(res.message);
         return;
       }
     } else {
