@@ -1,31 +1,45 @@
 import callAPI from "@/api";
 import { createContext, useContext } from "react";
 
-type AuthContextType = {
-    // user: 
-    signUp: (email: string, password: string) => Promise<object | null>;
-    signIn: (email: string, password: string) => Promise<object | null>;
-}
-
 interface AuthSignUpResponse {
   message: string ;
-  account: any;
-  profile: any;
   accessToken: string;
   refreshToken: string;
+  account: {
+    account_id: number;
+    email: string;
+    account_name: string | null;
+    created_at: string;
+    reset_token: string | null;
+    reset_token_expiry: string | null;
+  };
+  profile: {
+    profile_id: number;
+    account_id: number;
+    first_name: string | null;
+    last_name: string | null;
+    notifications_enabled: boolean;
+    created_at: string;
+  }
+}
+
+type AuthContextType = {
+    // user: 
+    signUp: (email: string, password: string) => Promise<AuthSignUpResponse | null>;
+    // signIn: (email: string, password: string) => Promise<Record<string, any>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default function AuthProvider({children}: {children: React.ReactNode}) {
-    const signUp = async (email: string, password: string): Promise<object | null> => {
+    const signUp = async (email: string, password: string): Promise<AuthSignUpResponse | null> => {
         try {
             const result: AuthSignUpResponse = await callAPI({
                 url: "api/auth/register",
                 method: "POST",
                 body: {email, password}
             });
-            console.log(result);
+           
             return result;
         } catch (err) {
             console.error("Signup failed", err);
@@ -33,22 +47,22 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
         }
     }
 
-    const signIn = async (email: string, password: string): Promise<object | null> => {
-        try {
-            const result = await callAPI({
-                url: "api/auth/login",
-                method: "POST",
-                body: {email, password}
-            });
-            return result;
-        } catch (err) {
-            console.log(err);
-            return null;
-        }
-    }
+    // const signIn = async (email: string, password: string): Promise<object | null> => {
+    //     try {
+    //         const result = await callAPI({
+    //             url: "api/auth/login",
+    //             method: "POST",
+    //             body: {email, password}
+    //         });
+    //         return result;
+    //     } catch (err) {
+    //         console.log(err);
+    //         return null;
+    //     }
+    // }
 
     return (
-        <AuthContext.Provider value={{signUp, signIn}}>
+        <AuthContext.Provider value={{signUp}}>
             {children}
         </AuthContext.Provider>
     )

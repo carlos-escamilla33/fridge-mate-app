@@ -11,7 +11,7 @@ export default function AuthScreen() {
   const [error, setError] = useState<string | null>("");
 
   const theme = useTheme();
-  const { signIn, signUp } = useAuth();
+  const { signUp } = useAuth();
   const router = useRouter();
 
   async function handleAuth() {
@@ -30,12 +30,12 @@ export default function AuthScreen() {
     if (isSignUp) {
       const res = await signUp(email, password);
       console.log(res);
-      if (res.message != "You Sucessfully Registered!") {
-        setError(res.message);
+      if (res?.message !== "You Successfully Registered!") {
+        setError(`Error in signing up: ${res?.message}`);
         return;
       }
     } else {
-      await signIn(email, password);
+      // await signIn(email, password);
     }
     router.replace("./");
   }
