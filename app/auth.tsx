@@ -7,6 +7,7 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper";
 export default function AuthScreen() {
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
+  const [accountName, setAccountName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>("");
 
@@ -61,6 +62,14 @@ export default function AuthScreen() {
           style={styles.input}
           onChangeText={setEmail}
         />
+        {isSignUp && <TextInput
+          label="Account Name"
+          autoCapitalize="none"
+          placeholder="Account Name"
+          mode="outlined"
+          style={styles.input}
+          />
+        }
         <TextInput
           label="Password"
           autoCapitalize="none"
