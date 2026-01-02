@@ -11,7 +11,7 @@ export default function AuthScreen() {
   const [error, setError] = useState<string | null>("");
 
   const theme = useTheme();
-  const { signUp } = useAuth();
+  const { signUp, signIn } = useAuth();
   const router = useRouter();
 
   async function handleAuth() {
@@ -35,7 +35,7 @@ export default function AuthScreen() {
         return;
       }
     } else {
-      // await signIn(email, password);
+      await signIn(email, password);
     }
     router.replace("./");
   }
