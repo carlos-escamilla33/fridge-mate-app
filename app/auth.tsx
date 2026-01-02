@@ -1,3 +1,5 @@
+// Rileyescamilla3@gmail.com
+// Riley1234!
 import { useAuth } from "@/context/auth-context";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -32,13 +34,17 @@ export default function AuthScreen() {
 
     if (isSignUp) {
       const res = await signUp(accountName, firstName, lastName, email, password);
-      console.log(res);
+
       if (res?.message !== "You Successfully Registered!") {
         setError(`Error in signing up: ${res?.message}`);
         return;
       }
     } else {
-      await signIn(email, password);
+      const res = await signIn(email, password);
+      if (!res) {
+        setError("Account not found. Sign up or try again.");
+        return;
+      }
     }
     router.replace("./");
   }
@@ -54,8 +60,7 @@ export default function AuthScreen() {
         <Text style={styles.title} variant="headlineMedium">
           {isSignUp ? "Create Account" : "Welcome Back"}
         </Text>
-
-
+        
         {
           isSignUp && <TextInput
           label="Account Name"
