@@ -6,8 +6,10 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper";
 
 export default function AuthScreen() {
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
   const [accountName, setAccountName] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>("");
 
@@ -16,7 +18,7 @@ export default function AuthScreen() {
   const router = useRouter();
 
   async function handleAuth() {
-    if (!email || !password) {
+    if (!email || !password || (isSignUp && (!accountName || !firstName || !lastName))) {
       setError("Please fill in all fields");
       return;
     }
@@ -29,7 +31,7 @@ export default function AuthScreen() {
     setError(null);
 
     if (isSignUp) {
-      const res = await signUp(email, password);
+      const res = await signUp(accountName, firstName, lastName, email, password);
       console.log(res);
       if (res?.message !== "You Successfully Registered!") {
         setError(`Error in signing up: ${res?.message}`);
@@ -53,23 +55,47 @@ export default function AuthScreen() {
           {isSignUp ? "Create Account" : "Welcome Back"}
         </Text>
 
-        <TextInput
-          label="Email"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          placeholder="example@gmail.com"
-          mode="outlined"
-          style={styles.input}
-          onChangeText={setEmail}
-        />
-        {isSignUp && <TextInput
+
+        {
+          isSignUp && <TextInput
           label="Account Name"
           autoCapitalize="none"
           placeholder="Account Name"
           mode="outlined"
           style={styles.input}
+          onChangeText={setAccountName}
           />
         }
+        {
+          isSignUp && <TextInput
+            label="First Name"
+            autoCapitalize="none"
+            placeholder="First Name"
+            mode="outlined"
+            style={styles.input}
+            onChangeText={setFirstName}
+          />
+        }
+        {
+          isSignUp && <TextInput
+            label="Last Name"
+            autoCapitalize="none"
+            placeholder="Last Name"
+            mode="outlined"
+            style={styles.input}
+            onChangeText={setLastName}
+           />
+        }
+        <TextInput
+          label="Email"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          autoComplete="email"
+          placeholder="example@gmail.com"
+          mode="outlined"
+          style={styles.input}
+          onChangeText={setEmail}
+        />
         <TextInput
           label="Password"
           autoCapitalize="none"

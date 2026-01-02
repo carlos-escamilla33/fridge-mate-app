@@ -39,19 +39,20 @@ interface AuthSignInResponse {
 
 type AuthContextType = {
     // user: 
-    signUp: (email: string, password: string) => Promise<AuthSignUpResponse | null>;
+    signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<AuthSignUpResponse | null>;
     signIn: (email: string, password: string) => Promise<AuthSignInResponse | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default function AuthProvider({children}: {children: React.ReactNode}) {
-    const signUp = async (email: string, password: string): Promise<AuthSignUpResponse | null> => {
+    const signUp = async (account_name: string, first_name: string,
+         last_name: string, email: string, password: string): Promise<AuthSignUpResponse | null> => {
         try {
             const result: AuthSignUpResponse = await callAPI({
                 url: "api/auth/register",
                 method: "POST",
-                body: {email, password}
+                body: {account_name, first_name, last_name, email, password}
             });
            
             return result;
