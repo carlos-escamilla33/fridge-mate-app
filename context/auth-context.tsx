@@ -23,6 +23,14 @@ interface AuthSignUpResponse {
   }
 }
 
+interface Profile {
+    first_name: string;
+    last_name: string;
+    notifications_enabled: boolean;
+    created_at: string;
+    account_id: number;
+}
+
 interface AuthSignInResponse {
     message: string;
     accessToken: string;
@@ -35,10 +43,13 @@ interface AuthSignInResponse {
         reset_token: string | null;
         reset_token_expiry: string | null;
     }
+    profiles: Profile[];
 }
 
+
+
 type AuthContextType = {
-    // user: 
+    // profile: Profile | null;
     signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<AuthSignUpResponse | null>;
     signIn: (email: string, password: string) => Promise<AuthSignInResponse | null>;
 }
@@ -46,6 +57,8 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default function AuthProvider({children}: {children: React.ReactNode}) {
+    // const [profile, setProfile] = useState<Profile | null>(null);
+
     const signUp = async (account_name: string, first_name: string,
          last_name: string, email: string, password: string): Promise<AuthSignUpResponse | null> => {
         try {
@@ -64,11 +77,12 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
 
     const signIn = async (email: string, password: string): Promise<AuthSignInResponse | null> => {
         try {
-            const result = await callAPI({
+            const result: AuthSignInResponse = await callAPI({
                 url: "api/auth/login",
                 method: "POST",
                 body: {email, password}
             });
+            console.log(result);
             return result;
         } catch (err) {
             console.log(err);

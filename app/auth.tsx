@@ -31,16 +31,17 @@ export default function AuthScreen() {
     }
 
     setError(null);
+    let res;
 
     if (isSignUp) {
-      const res = await signUp(accountName, firstName, lastName, email, password);
+      res = await signUp(accountName, firstName, lastName, email, password);
 
       if (res?.message !== "You Successfully Registered!") {
         setError(`Error in signing up: ${res?.message}`);
         return;
       }
     } else {
-      const res = await signIn(email, password);
+      res = await signIn(email, password);
       if (!res) {
         setError("Account not found. Sign up or try again.");
         return;
@@ -48,6 +49,7 @@ export default function AuthScreen() {
     }
     router.replace("./");
   }
+
   function handleSwitch() {
     setIsSignUp((prev) => !prev);
   }
