@@ -1,26 +1,13 @@
 import callAPI from "@/api";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
-interface AuthSignUpResponse {
-  message: string ;
-  accessToken: string;
-  refreshToken: string;
-  account: {
+interface Account {
     account_id: number;
     email: string;
     account_name: string | null;
     created_at: string;
     reset_token: string | null;
     reset_token_expiry: string | null;
-  };
-  profile: {
-    profile_id: number;
-    account_id: number;
-    first_name: string | null;
-    last_name: string | null;
-    notifications_enabled: boolean;
-    created_at: string;
-  }
 }
 
 interface Profile {
@@ -31,67 +18,84 @@ interface Profile {
     account_id: number;
 }
 
+interface AuthSignUpResponse {
+  message: string ;
+  accessToken: string;
+  refreshToken: string;
+  account: Account;
+  profile: Profile;
+}
+
 interface AuthSignInResponse {
     message: string;
     accessToken: string;
     refreshToken: string;
-    account: {
-        account_id: number;
-        email: string;
-        account_name: string | null;
-        created_at: string;
-        reset_token: string | null;
-        reset_token_expiry: string | null;
-    }
+    account: Account;
     profiles: Profile[];
 }
 
 
 
 type AuthContextType = {
-    // profile: Profile | null;
-    signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<AuthSignUpResponse | null>;
-    signIn: (email: string, password: string) => Promise<AuthSignInResponse | null>;
+    account: Account | null;
+    currentProfile: Profile | null;
+    profiles: Profile[] | [];
+    signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<boolean>;
+    signIn: (email: string, password: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default function AuthProvider({children}: {children: React.ReactNode}) {
-    // const [profile, setProfile] = useState<Profile | null>(null);
+    const [account, setAccount] = useState<Account | null>(null);
+    const [profiles, setProfiles] = useState<Profile[] | []>([]);
+    const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
 
     const signUp = async (account_name: string, first_name: string,
-         last_name: string, email: string, password: string): Promise<AuthSignUpResponse | null> => {
+         last_name: string, email: string, password: string): Promise<boolean> => {
         try {
-            const result: AuthSignUpResponse = await callAPI({
+            const res: AuthSignUpResponse = await callAPI({
                 url: "api/auth/register",
                 method: "POST",
                 body: {account_name, first_name, last_name, email, password}
             });
+
+            if (res.message === "You Successfully Registered!") {
+                setAccount(res.account);
+                setCurrentProfile(res.profile);
+                return true;
+            }
            
-            return result;
+            return false;
         } catch (err) {
             console.error("Signup failed", err);
-            return null;
+            return false;
         }
     }
 
-    const signIn = async (email: string, password: string): Promise<AuthSignInResponse | null> => {
+    const signIn = async (email: string, password: string): Promise<boolean> => {
         try {
-            const result: AuthSignInResponse = await callAPI({
+            const res: AuthSignInResponse = await callAPI({
                 url: "api/auth/login",
                 method: "POST",
                 body: {email, password}
             });
-            console.log(result);
-            return result;
+            console.log(res);
+            if (res.message === "You Successfully Logged In!") {
+                setAccount(res.account);
+                setProfiles(res.profiles);
+                return true;
+            }
+
+            return false;
         } catch (err) {
             console.log(err);
-            return null;
+            return false;
         }
     }
 
     return (
-        <AuthContext.Provider value={{signUp, signIn}}>
+        <AuthContext.Provider value={{account, profiles, currentProfile, signUp, signIn}}>
             {children}
         </AuthContext.Provider>
     )

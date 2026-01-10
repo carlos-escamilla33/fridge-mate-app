@@ -36,8 +36,8 @@ export default function AuthScreen() {
     if (isSignUp) {
       res = await signUp(accountName, firstName, lastName, email, password);
 
-      if (res?.message !== "You Successfully Registered!") {
-        setError(`Error in signing up: ${res?.message}`);
+      if (!res) {
+        setError(`Error in signing up. Try again.`);
         return;
       }
     } else {
