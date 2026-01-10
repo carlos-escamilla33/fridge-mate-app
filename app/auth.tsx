@@ -1,5 +1,7 @@
 // Rileyescamilla3@gmail.com
 // Riley1234!
+// Lunaescamilla3@gmail.com
+// Luna1234!
 import { useAuth } from "@/context/auth-context";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -46,6 +48,8 @@ export default function AuthScreen() {
         setError("Account not found. Sign up or try again.");
         return;
       }
+      router.replace("./profile-select");
+      return;
     }
     router.replace("./");
   }
