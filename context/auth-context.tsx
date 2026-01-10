@@ -10,7 +10,8 @@ interface Account {
     reset_token_expiry: string | null;
 }
 
-interface Profile {
+export interface Profile {
+    profile_id: number;
     first_name: string;
     last_name: string;
     notifications_enabled: boolean;
