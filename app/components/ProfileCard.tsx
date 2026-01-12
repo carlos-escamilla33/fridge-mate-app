@@ -3,12 +3,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface ProfileCardProps {
     profile: Profile;
-    // onPress: (id: string) => void;
+    handleProfilePress: (profile: Profile) => void;
 }
 
-export default function ProfileCard ({profile}: ProfileCardProps) {
+export default function ProfileCard ({profile, handleProfilePress}: ProfileCardProps) {
     return (
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity style={styles.card} onPress={() => handleProfilePress(profile)}>
             <View style={styles.defaultAvatar}>
                 <Text style={styles.avatarText}>
                     {profile.first_name.charAt(0).toUpperCase()}

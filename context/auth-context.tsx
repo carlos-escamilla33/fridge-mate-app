@@ -40,6 +40,7 @@ interface AuthSignInResponse {
 type AuthContextType = {
     account: Account | null;
     currentProfile: Profile | null;
+    setCurrentProfile: React.Dispatch<React.SetStateAction<Profile | null>>;
     profiles: Profile[] | [];
     signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<boolean>;
     signIn: (email: string, password: string) => Promise<boolean>;
@@ -96,7 +97,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     }
 
     return (
-        <AuthContext.Provider value={{account, profiles, currentProfile, signUp, signIn}}>
+        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp, signIn}}>
             {children}
         </AuthContext.Provider>
     )

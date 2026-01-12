@@ -1,18 +1,20 @@
-import { useAuth } from "@/context/auth-context";
+import { Profile, useAuth } from "@/context/auth-context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ProfileCard from "./components/ProfileCard";
 
 export default function ProfileSelectScreen() {
-  const { profiles } = useAuth();
+  const { profiles, setCurrentProfile } = useAuth();
 
-  function onPress(id: string) {}
+  function handleProfilePress(profile: Profile) {
+    setCurrentProfile(profile);
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Who is using Fridge Mate?</Text>
       <View style={styles.profileContainer}>
         {profiles.map((profile) => (
-          <ProfileCard key={profile.profile_id} profile={profile} />
+          <ProfileCard key={profile.profile_id} profile={profile} handleProfilePress={handleProfilePress}/>
         ))}
         <TouchableOpacity style={styles.addBtnCard}>
                 <View style={styles.addAvatar}>
