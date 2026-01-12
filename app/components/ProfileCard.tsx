@@ -14,7 +14,9 @@ export default function ProfileCard ({profile}: ProfileCardProps) {
                     {profile.first_name.charAt(0).toUpperCase()}
                 </Text>
             </View>
-            <Text style={styles.name}>{profile.first_name}</Text>
+            <Text style={styles.name}>
+                    {profile.first_name}
+            </Text>
         </TouchableOpacity>
     )
 }
