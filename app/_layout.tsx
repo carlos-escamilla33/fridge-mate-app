@@ -15,6 +15,7 @@ const RouteGuard = ({ children }: { children: React.ReactNode }) => {
     } else if(account && inAuthGroup) {
       router.replace("./");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, segments]);
 
   return <>{children}</>;

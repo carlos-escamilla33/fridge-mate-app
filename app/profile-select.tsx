@@ -21,7 +21,6 @@ export default function ProfileSelectScreen() {
   }
 
   function handleAddProfilePress() {
-    // take us to the profile screen to sign up.
     router.replace("./profile-create");
   }
 

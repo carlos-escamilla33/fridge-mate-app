@@ -51,6 +51,7 @@ type AuthContextType = {
     profiles: Profile[] | [];
     signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<boolean>;
     signIn: (email: string, password: string) => Promise<boolean>;
+    signOut: () => Promise<void>;
     profileSignUp: (first_name: string, last_name: string) => Promise<boolean>;
     getAllProfiles: () => Promise<void>;
 }
@@ -108,6 +109,18 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
         }
     }
 
+    const signOut = async (): Promise<void> => {
+        try {
+            setAccount(null);
+            setCurrentProfile(null);
+            setToken("");
+            setProfiles([]);
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const profileSignUp = async (first_name: string, last_name: string): Promise<boolean> => {
         try {
             const res: AuthProfileSignUpResponse = await callAPI({
@@ -145,7 +158,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     }
 
     return (
-        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp, signIn, profileSignUp, getAllProfiles}}>
+        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp, signIn, signOut, profileSignUp, getAllProfiles}}>
             {children}
         </AuthContext.Provider>
     )
