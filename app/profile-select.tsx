@@ -10,8 +10,8 @@ export default function ProfileSelectScreen() {
     console.log(currentProfile);
   }
 
-  function handleAddProfilePress() {
-
+  async function handleAddProfilePress() {
+    // take us to the profile screen to sign up.
   }
 
   return (
