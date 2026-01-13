@@ -40,7 +40,9 @@ interface AuthProfileSignUpResponse {
     profile: Profile;
 }
 
-
+interface getAllProfilesResponse {
+    profiles: Profile[];
+}
 
 type AuthContextType = {
     account: Account | null;
@@ -50,6 +52,7 @@ type AuthContextType = {
     signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<boolean>;
     signIn: (email: string, password: string) => Promise<boolean>;
     profileSignUp: (first_name: string, last_name: string) => Promise<boolean>;
+    getAllProfiles: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -126,8 +129,23 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
         }
     }
 
+    const getAllProfiles = async (): Promise<void> => {
+        try {
+            const res: getAllProfilesResponse = await callAPI({
+                url: "api/profiles/",
+                token
+            });
+
+            if (res) {
+                setProfiles(res.profiles);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp, signIn, profileSignUp}}>
+        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp, signIn, profileSignUp, getAllProfiles}}>
             {children}
         </AuthContext.Provider>
     )

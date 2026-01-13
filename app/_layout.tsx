@@ -8,7 +8,7 @@ const RouteGuard = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!isAuth) {
-      setTimeout(() => router.replace("./profile-create"), 0);
+      setTimeout(() => router.replace("./auth"), 0);
     }
   });
 

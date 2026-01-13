@@ -5,12 +5,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ProfileCard from "./components/ProfileCard";
 
 export default function ProfileSelectScreen() {
-  const { profiles, setCurrentProfile, currentProfile } = useAuth();
+  const { profiles, setCurrentProfile, currentProfile, getAllProfiles } = useAuth();
   const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
-
+        getAllProfiles();
     }, [])
   )
 
@@ -19,25 +19,25 @@ export default function ProfileSelectScreen() {
     console.log(currentProfile);
   }
 
-  async function handleAddProfilePress() {
+  function handleAddProfilePress() {
     // take us to the profile screen to sign up.
     router.replace("./profile-create");
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Who is using Friidge Mate?</Text>
+      <Text style={styles.title}>Who is using Fridge Mate?</Text>
       <View style={styles.profileContainer}>
         {profiles.map((profile) => (
           <ProfileCard key={profile.profile_id} profile={profile} handleProfilePress={handleProfilePress}/>
         ))}
-        <TouchableOpacity style={styles.addBtnCard}>
+        <TouchableOpacity style={styles.addBtnCard} onPress={handleAddProfilePress}>
                 <View style={styles.addAvatar}>
                     <Text style={styles.symbolText}>
                         +
                     </Text>
                 </View>
-                <Text style={styles.addText} onPress={handleAddProfilePress}>Add Profile</Text>
+                <Text style={styles.addText}>Add Profile</Text>
         </TouchableOpacity>
         <View>
         </View>
