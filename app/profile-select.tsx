@@ -1,9 +1,18 @@
 import { Profile, useAuth } from "@/context/auth-context";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ProfileCard from "./components/ProfileCard";
 
 export default function ProfileSelectScreen() {
   const { profiles, setCurrentProfile, currentProfile } = useAuth();
+  const router = useRouter();
+
+  useFocusEffect(
+    useCallback(() => {
+
+    }, [])
+  )
 
   function handleProfilePress(profile: Profile): void {
     setCurrentProfile(profile);
@@ -12,6 +21,7 @@ export default function ProfileSelectScreen() {
 
   async function handleAddProfilePress() {
     // take us to the profile screen to sign up.
+    router.replace("./profile-create");
   }
 
   return (
@@ -27,7 +37,7 @@ export default function ProfileSelectScreen() {
                         +
                     </Text>
                 </View>
-                <Text style={styles.addText}>Add Profile</Text>
+                <Text style={styles.addText} onPress={handleAddProfilePress}>Add Profile</Text>
         </TouchableOpacity>
         <View>
         </View>
