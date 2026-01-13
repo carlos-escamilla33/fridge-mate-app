@@ -3,15 +3,20 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ProfileCard from "./components/ProfileCard";
 
 export default function ProfileSelectScreen() {
-  const { profiles, setCurrentProfile } = useAuth();
+  const { profiles, setCurrentProfile, currentProfile } = useAuth();
 
-  function handleProfilePress(profile: Profile) {
+  function handleProfilePress(profile: Profile): void {
     setCurrentProfile(profile);
+    console.log(currentProfile);
+  }
+
+  function handleAddProfilePress() {
+
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Who is using Fridge Mate?</Text>
+      <Text style={styles.title}>Who is using Friidge Mate?</Text>
       <View style={styles.profileContainer}>
         {profiles.map((profile) => (
           <ProfileCard key={profile.profile_id} profile={profile} handleProfilePress={handleProfilePress}/>
@@ -41,6 +46,7 @@ const styles = StyleSheet.create({
     },
 
     title: {
+        textAlign: "center",
         fontSize: 32,
         color: "#fff",
         marginBottom: 40,
