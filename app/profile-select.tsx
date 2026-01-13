@@ -11,6 +11,7 @@ export default function ProfileSelectScreen() {
   useFocusEffect(
     useCallback(() => {
         getAllProfiles();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   )
 
