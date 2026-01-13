@@ -35,6 +35,11 @@ interface AuthSignInResponse {
     profiles: Profile[];
 }
 
+interface AuthProfileSignUpResponse {
+    message: string;
+
+}
+
 
 
 type AuthContextType = {
@@ -44,12 +49,14 @@ type AuthContextType = {
     profiles: Profile[] | [];
     signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<boolean>;
     signIn: (email: string, password: string) => Promise<boolean>;
+    profileSignUp: (first_name: string, last_name: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default function AuthProvider({children}: {children: React.ReactNode}) {
     const [account, setAccount] = useState<Account | null>(null);
+    const [token, setToken] = useState<string>("");
     const [profiles, setProfiles] = useState<Profile[] | []>([]);
     const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
 
@@ -65,6 +72,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
             if (res.message === "You Successfully Registered!") {
                 setAccount(res.account);
                 setCurrentProfile(res.profile);
+                setToken(res.accessToken);
                 return true;
             }
            
@@ -86,6 +94,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
             if (res.message === "You Successfully Logged In!") {
                 setAccount(res.account);
                 setProfiles(res.profiles);
+                setToken(res.accessToken);
                 return true;
             }
 
@@ -96,8 +105,24 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
         }
     }
 
+    const profileSignUp = async (first_name: string, last_name: string): Promise<boolean> => {
+        try {
+            const res: AuthProfileSignUpResponse = await callAPI({
+                url: "api/accounts/register-profile",
+                method: "POST",
+                body: {first_name, last_name},
+                token
+            });
+
+            return false;
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp, signIn}}>
+        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp, signIn, profileSignUp}}>
             {children}
         </AuthContext.Provider>
     )

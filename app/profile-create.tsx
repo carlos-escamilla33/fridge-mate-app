@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/auth-context";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -12,8 +13,9 @@ export default function ProfileCreateScreen() {
     const [profileLastName, setProfileLastName] = useState<string>("");
     const [error, setError] = useState("");
 
-    const { account } = useAuth();
+    const { account, profileSignUp } = useAuth();
     const theme = useTheme();
+    const router = useRouter();
 
     async function handleSubmitProfilePress() {
         if (!profileFirstName || !profileLastName) {
@@ -21,6 +23,12 @@ export default function ProfileCreateScreen() {
             return;
         }
 
+        if (!account?.account_id) {
+            setError("No account detected. Create an account first.");
+            router.replace("./auth");
+            return;
+        }
+        const res = await profileSignUp(profileFirstName, profileLastName);
     }
 
   return (
