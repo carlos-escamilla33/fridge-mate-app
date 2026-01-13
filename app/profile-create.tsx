@@ -29,6 +29,13 @@ export default function ProfileCreateScreen() {
             return;
         }
         const res = await profileSignUp(profileFirstName, profileLastName);
+
+        if (!res) {
+            setError("Error in profile creation. Try again.");
+            return;
+        }
+
+        router.replace("./profile-select");
     }
 
   return (

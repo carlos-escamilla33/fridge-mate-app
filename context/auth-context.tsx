@@ -37,7 +37,7 @@ interface AuthSignInResponse {
 
 interface AuthProfileSignUpResponse {
     message: string;
-
+    profile: Profile;
 }
 
 
@@ -113,6 +113,11 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
                 body: {first_name, last_name},
                 token
             });
+
+            if (res.message === "Profile successfully created!") {
+                setCurrentProfile(res.profile);
+                return true;
+            }
 
             return false;
         } catch (err) {
