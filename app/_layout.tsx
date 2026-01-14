@@ -4,19 +4,21 @@ import { useEffect } from "react";
 
 const RouteGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const {account, isLoadingAccount} = useAuth();
+  const { account } = useAuth();
   const segments = useSegments();
 
   useEffect(() => {
-    // if (isLoading) return;
+    const timeout = setTimeout(() => {
+      const inAuthGroup = segments[0] === "auth";
+      console.log(segments);
 
-    const inAuthGroup = segments[0] === "auth";
-
-    if (!account && !inAuthGroup) {
-      router.replace("./auth");
-    } else if(account && inAuthGroup) {
-      router.replace("./");
-    }
+      if (!account && !inAuthGroup) {
+        router.replace("./auth");
+      } else if (account && inAuthGroup) {
+        router.replace("./");
+      }
+    }, 1);
+    return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, segments]);
 
@@ -28,10 +30,16 @@ export default function RootLayout() {
     <AuthProvider>
       <RouteGuard>
         <Stack>
-          <Stack.Screen name="index" options={{title: "Home"}}/>
-          <Stack.Screen name="auth" options={{title: "Authentication"}}/>
-          <Stack.Screen name="profile-select" options={{title: "Profile Select"}}/>
-          <Stack.Screen name="profile-create" options={{title: "Profile Create"}}/>
+          <Stack.Screen name="index" options={{ title: "Home" }} />
+          <Stack.Screen name="auth" options={{ title: "Authentication" }} />
+          <Stack.Screen
+            name="profile-select"
+            options={{ title: "Profile Select" }}
+          />
+          <Stack.Screen
+            name="profile-create"
+            options={{ title: "Profile Create" }}
+          />
         </Stack>
       </RouteGuard>
     </AuthProvider>
