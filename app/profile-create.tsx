@@ -2,7 +2,7 @@ import { useAuth } from "@/context/auth-context";
 import { useNavigation, useRouter } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
-import { Appbar, Button, Text, TextInput, useTheme } from "react-native-paper";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
 
 export default function ProfileCreateScreen() {
   const [profileFirstName, setProfileFirstName] = useState<string>("");
@@ -36,11 +36,6 @@ export default function ProfileCreateScreen() {
   }
 
   return (
-    <>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Back" />
-      </Appbar.Header>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
@@ -69,6 +64,5 @@ export default function ProfileCreateScreen() {
           </Button>
         </View>
       </KeyboardAvoidingView>
-    </>
   );
 }

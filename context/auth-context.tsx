@@ -47,6 +47,7 @@ interface getAllProfilesResponse {
 type AuthContextType = {
     account: Account | null;
     currentProfile: Profile | null;
+    isLoadingAccount: boolean;
     setCurrentProfile: React.Dispatch<React.SetStateAction<Profile | null>>;
     profiles: Profile[] | [];
     signUp: (account_name: string, first_name: string, last_name: string, email: string, password: string) => Promise<boolean>;
@@ -63,6 +64,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     const [token, setToken] = useState<string>("");
     const [profiles, setProfiles] = useState<Profile[] | []>([]);
     const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
+    const [isLoadingAccount, setIsLoadingAccount] = useState(true);
 
     const signUp = async (account_name: string, first_name: string,
          last_name: string, email: string, password: string): Promise<boolean> => {
@@ -158,7 +160,8 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     }
 
     return (
-        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp, signIn, signOut, profileSignUp, getAllProfiles}}>
+        <AuthContext.Provider value={{account, profiles, currentProfile, setCurrentProfile, signUp,
+         signIn, signOut, profileSignUp, getAllProfiles, isLoadingAccount}}>
             {children}
         </AuthContext.Provider>
     )
