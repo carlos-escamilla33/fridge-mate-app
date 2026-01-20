@@ -13,7 +13,7 @@ const RouteGuard = ({ children }: { children: React.ReactNode }) => {
       console.log(segments);
 
       if (!account && !inAuthGroup) {
-        router.replace("./auth"); // ./auth
+        router.replace("./(tabs)"); // ./auth
       } else if (account && inAuthGroup) {
         router.replace("./"); // ./ but we might want it to be ./tabs later on
       }
