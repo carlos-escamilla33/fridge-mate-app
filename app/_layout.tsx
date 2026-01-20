@@ -13,9 +13,9 @@ const RouteGuard = ({ children }: { children: React.ReactNode }) => {
       console.log(segments);
 
       if (!account && !inAuthGroup) {
-        router.replace("./auth");
+        router.replace("./auth"); // ./auth
       } else if (account && inAuthGroup) {
-        router.replace("./");
+        router.replace("./"); // ./ but we might want it to be ./tabs later on
       }
     }, 1);
     return () => clearTimeout(timeout);
@@ -29,7 +29,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <RouteGuard>
-        <Stack>
+        <Stack screenOptions={{headerShown: false}}>
           <Stack.Screen name="index" options={{ title: "Home" }} />
           <Stack.Screen name="auth" options={{ title: "Authentication" }} />
           <Stack.Screen
@@ -40,6 +40,7 @@ export default function RootLayout() {
             name="profile-create"
             options={{ title: "Profile Create" }}
           />
+          <Stack.Screen name="(tabs)" />
         </Stack>
       </RouteGuard>
     </AuthProvider>

@@ -1,12 +1,9 @@
-import AuthProvider from "@/context/auth-context";
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router";
 
-export default function RootLayout() {
+export default function TabLayout() {
   return (
-    <AuthProvider>
-        <Stack>
-          
-        </Stack>
-    </AuthProvider>
+    <Tabs>
+      
+    </Tabs>
   );
 }
