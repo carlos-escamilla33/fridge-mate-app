@@ -9,13 +9,13 @@ const RouteGuard = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const inAuthGroup = segments[0] === "auth";
+      const inAuthGroup = segments[0] === "(tabs)"; // change to auth later on
       console.log(segments);
 
       if (!account && !inAuthGroup) {
-        router.replace("./(tabs)"); // ./auth
+        router.replace("/(tabs)"); // ./auth
       } else if (account && inAuthGroup) {
-        router.replace("./"); // ./ but we might want it to be ./tabs later on
+        router.replace("/(tabs)"); // ./ but we might want it to be ./tabs later on
       }
     }, 1);
     return () => clearTimeout(timeout);
@@ -40,7 +40,7 @@ export default function RootLayout() {
             name="profile-create"
             options={{ title: "Profile Create" }}
           />
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(tabs)"/>
         </Stack>
       </RouteGuard>
     </AuthProvider>

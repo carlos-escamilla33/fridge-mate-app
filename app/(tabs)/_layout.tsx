@@ -1,6 +1,6 @@
-import Feather from '@expo/vector-icons/Feather';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Tabs } from "expo-router";
 
 export default function TabLayout() {
@@ -9,8 +9,8 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: "black",
         tabBarInactiveTintColor: "#8E8E93",
-      }}
-    >
+        headerShown: false,
+      }}>
       <Tabs.Screen
         name="index"
         options={{
@@ -21,7 +21,7 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen 
+      <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
@@ -31,7 +31,7 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen 
+      <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
