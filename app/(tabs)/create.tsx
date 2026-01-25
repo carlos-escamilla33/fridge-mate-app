@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import { TextInput } from "react-native-paper";
+import { SegmentedButtons, Text, TextInput } from "react-native-paper";
 import { DatePickerInput } from "react-native-paper-dates";
 
 export default function CreateScreen() {
   const [itemName, setItemName] = useState<string>("");
+  const [quality, setQuality] = useState<string>("");
   const [inputDate, setInputDate] = useState<Date | undefined>(undefined);
 
   function handleInputChange() {
@@ -16,6 +17,9 @@ export default function CreateScreen() {
       style={styles.container}
     >
       <View style={styles.content}>
+        <Text style={styles.title} variant="headlineMedium">
+          Add to your Fridge
+        </Text>
         <TextInput
           label="Item Name"
           autoCapitalize="none"
@@ -23,11 +27,6 @@ export default function CreateScreen() {
           mode="outlined"
           value={itemName}
           onChangeText={setItemName}
-        />
-        <TextInput
-          label="Ripeness Level"
-          placeholder="Level 1"
-          mode="outlined"
         />
         <View>
           <DatePickerInput
@@ -38,7 +37,16 @@ export default function CreateScreen() {
             value={inputDate}
             onChange={setInputDate}
             inputMode="start"
-            // style={styles.dateInput}
+          />
+          <SegmentedButtons
+            value={quality}
+            onValueChange={setQuality}
+            style={styles.segmentedButtonsInput}
+            buttons={[
+              { value: "fresh", label: "Fresh" },
+              { value: "good", label: "Good" },
+              { value: "use-soon", label: "Use Soon" },
+            ]}
           />
         </View>
       </View>
@@ -55,11 +63,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 16,
+    marginBottom: 10,
+    marginTop: 10,
   },
-  //   title: {
-  //     textAlign: "center",
-  //     marginBottom: 24,
-  //   },
+  title: {
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  segmentedButtonsInput: {
+    marginTop: 10,
+  },
   //   input: {
   //     marginBottom: 16,
   //   },
