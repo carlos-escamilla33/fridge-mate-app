@@ -1,6 +1,10 @@
 import AuthProvider, { useAuth } from "@/context/auth-context";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
+import { en, registerTranslation } from "react-native-paper-dates";
+
+// Register once at app startup
+registerTranslation("en", en);
 
 const RouteGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -29,7 +33,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <RouteGuard>
-        <Stack screenOptions={{headerShown: false}}>
+        <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" options={{ title: "Home" }} />
           <Stack.Screen name="auth" options={{ title: "Authentication" }} />
           <Stack.Screen
@@ -40,7 +44,7 @@ export default function RootLayout() {
             name="profile-create"
             options={{ title: "Profile Create" }}
           />
-          <Stack.Screen name="(tabs)"/>
+          <Stack.Screen name="(tabs)" />
         </Stack>
       </RouteGuard>
     </AuthProvider>

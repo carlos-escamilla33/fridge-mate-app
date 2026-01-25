@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import { SegmentedButtons, Text, TextInput } from "react-native-paper";
+import { Button, SegmentedButtons, Text, TextInput } from "react-native-paper";
 import { DatePickerInput } from "react-native-paper-dates";
 
 export default function CreateScreen() {
@@ -8,7 +8,7 @@ export default function CreateScreen() {
   const [quality, setQuality] = useState<string>("");
   const [inputDate, setInputDate] = useState<Date | undefined>(undefined);
 
-  function handleInputChange() {
+  function handleInputSubmission() {
     console.log("updating inputs");
   }
   return (
@@ -48,6 +48,13 @@ export default function CreateScreen() {
               { value: "use-soon", label: "Use Soon" },
             ]}
           />
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={handleInputSubmission}
+          >
+            Add
+          </Button>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -76,10 +83,10 @@ const styles = StyleSheet.create({
   //   input: {
   //     marginBottom: 16,
   //   },
-  //   button: {
-  //     textAlign: "center",
-  //     marginTop: 8,
-  //   },
+  button: {
+    textAlign: "center",
+    marginTop: 8,
+  },
   //   switchModeButton: {
   //     marginTop: 16,
   //   },
