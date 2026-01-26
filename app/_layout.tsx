@@ -13,11 +13,11 @@ const RouteGuard = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const inAuthGroup = segments[0] === "(tabs)"; // change to auth later on
+      const inAuthGroup = segments[0] === "auth"; // change to auth later on
       console.log(segments);
 
       if (!account && !inAuthGroup) {
-        router.replace("/(tabs)"); // ./auth
+        router.replace("/auth"); // ./auth
       } else if (account && inAuthGroup) {
         router.replace("/(tabs)"); // ./ but we might want it to be ./tabs later on
       }

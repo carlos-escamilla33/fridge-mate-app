@@ -19,10 +19,11 @@ export default function ProfileSelectScreen() {
   function handleProfilePress(profile: Profile): void {
     setCurrentProfile(profile);
     console.log(currentProfile);
+    router.replace("/(tabs)");
   }
 
   function handleAddProfilePress() {
-    router.replace("/(tabs)");
+    router.replace("/profile-create");
   }
 
   return (
