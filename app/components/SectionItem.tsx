@@ -1,3 +1,3 @@
-export function SectionItem() {
+export function SectionItem({ item }) {
   return <></>;
 }
