@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from "react-native";
 import { SectionItem } from "./SectionItem";
 
 interface SectionProps {
-    title: string,
-    items: any[],
-    style: 
+  title: string;
+  items: any[];
+  style?: object;
 }
 
 export function Section({ title, items, style }: SectionProps) {
@@ -12,9 +12,13 @@ export function Section({ title, items, style }: SectionProps) {
     <View style={[styles.sectionContainer]}>
       {title && <Text>{title}</Text>}
       <View>
-        {items.map((item) => {
-          <SectionItem key={index} item={item}/>;
-        })}
+        {items.map((item, index) => (
+          <SectionItem
+            key={item.id || index}
+            item={item}
+            // isLast={index === item.length - 1}
+          />
+        ))}
       </View>
     </View>
   );
