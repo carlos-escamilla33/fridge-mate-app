@@ -1,3 +1,3 @@
-export function SectionItem({ item }) {
+export function SectionItem({ item, isLast }) {
   return <></>;
 }

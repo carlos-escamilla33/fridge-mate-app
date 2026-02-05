@@ -16,7 +16,7 @@ export function Section({ title, items, style }: SectionProps) {
           <SectionItem
             key={item.id || index}
             item={item}
-            // isLast={index === item.length - 1}
+            isLast={index === item.length - 1}
           />
         ))}
       </View>
