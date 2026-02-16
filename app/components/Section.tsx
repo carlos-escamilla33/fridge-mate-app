@@ -25,5 +25,21 @@ export function Section({ title, items, style }: SectionProps) {
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {},
+  sectionContainer: {
+    marginBottom: 32,
+  },
+  sectionTitle: {
+    color: "#9CA3AF",
+    fontSize: 13,
+    fontWeight: "600",
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  itemsContainer: {
+    backgroundColor: "#18181B",
+    borderRadius: 12,
+    overflow: "hidden",
+  },
 });
