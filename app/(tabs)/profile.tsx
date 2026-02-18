@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/auth-context";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Section } from "../components/Section";
 
 export default function ProfileScreen() {
@@ -11,8 +11,16 @@ export default function ProfileScreen() {
     currentProfile?.created_at,
   ];
   return (
-    <View>
+    <View style={styles.profileContainer}>
       <Section title="My Profile" items={items} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  profileContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
