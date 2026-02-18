@@ -9,9 +9,9 @@ interface SectionProps {
 
 export function Section({ title, items, style }: SectionProps) {
   return (
-    <View style={[styles.sectionContainer]}>
-      {title && <Text>{title}</Text>}
-      <View>
+    <View style={styles.sectionContainer}>
+      {title && <Text style={styles.sectionTitle}>{title}</Text>}
+      <View style={styles.itemsContainer}>
         {items.map((item, index) =>
           typeof item === "boolean" ? (
             <SectionItem
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   itemsContainer: {
-    backgroundColor: "#18181B",
+    // backgroundColor: "#18181B",
     borderRadius: 12,
     overflow: "hidden",
   },
