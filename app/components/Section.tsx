@@ -12,13 +12,21 @@ export function Section({ title, items, style }: SectionProps) {
     <View style={[styles.sectionContainer]}>
       {title && <Text>{title}</Text>}
       <View>
-        {items.map((item, index) => (
-          <SectionItem
-            key={index}
-            item={item}
-            isLast={index === item.length - 1}
-          />
-        ))}
+        {items.map((item, index) =>
+          typeof item === "boolean" ? (
+            <SectionItem
+              key={index}
+              item={item === true ? "Notifications ON" : "Notifications OFF"}
+              isLast={index === items.length - 1}
+            />
+          ) : (
+            <SectionItem
+              key={index}
+              item={item}
+              isLast={index === items.length - 1}
+            />
+          ),
+        )}
       </View>
     </View>
   );
