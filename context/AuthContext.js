@@ -43,13 +43,14 @@ export function AuthProvider({children}) {
 
     async function signIn(email, password) {
         try {
-            const res = await callApi({url: "/api/auth/login"});
+            const res = await callApi({url: "/api/auth/login", body: {email, password}});
 
             if (res.message != "You Successfully Logged In!") {
                 throw new Error("Error in signing in");
             }
-
-            // const data = await res
+            const data = await res.json();
+            await persist(data.accessToken, data.account.user);
+            // router.replace("/(app)/profiles");
         } catch(err) {
             console.log(err);
         }
