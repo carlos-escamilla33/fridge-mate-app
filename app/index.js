@@ -2,14 +2,7 @@ import { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export default function SplashScreen() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -61,11 +54,44 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.container}>
-      <Animated.View>
-        <View>
+      <Animated.View
+        style={[
+            styles.content,
+            {opacity: fadeAnim, transform:[{translateY: slideAnim}]},
+        ]}
+      >
+        <View style={styles.iconWrap}>
           <Text>🥬</Text>
+        </View>
+        <Text>FridgeMate</Text>
+        <Text>Nothing goes to waste.</Text>
+        <View>
+            <Animated.View />
         </View>
       </Animated.View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.forest,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingHorizontal: 40,
+    },
+    content: {
+        alignItems: "center",
+        gap: 12
+    },
+    iconWrap: {
+        width: 80,
+        height: 80,
+        backgroundColor: "rgba(255,255,255,0.1)",
+        borderRadius: 22,
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 8,
+    }
+})
