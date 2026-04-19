@@ -7,7 +7,7 @@ const AuthContext = createContext(null);
 const TOKEN_KEY = "fridgemate_token";
 const USER_KEY = "fridgemate_user";
 
-const API_BASE = processColor.env.API_URL;
+// const API_BASE = processColor.env.API_URL;
 
 export function AuthProvider({children}) {
     const [user, setUser] = useState(null);

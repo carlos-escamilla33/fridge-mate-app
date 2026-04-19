@@ -53,7 +53,12 @@ export default function SplashScreen() {
 
     return (
         <View style={stykes.container}>
-
+            <Animated.View
+            >
+                <View>
+                    <Text>🥬</Text>
+                </View>
+            </Animated.View>
         </View>
     )
 
