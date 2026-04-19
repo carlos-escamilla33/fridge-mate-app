@@ -18,12 +18,19 @@ export function AuthProvider({children}) {
     useEffect(() => {
         (async () => {
             try {
+                const storedToken = await SecureStore.getItemAsync(TOKEN_KEY);
+                const storedUser = await SecureStore.getItemAsync(USER_KEY);
 
+                if (storedToken && storedUser) {
+                    setToken(storedToken);
+                    setUser(JSON.parse(storedUser));
+                    router.replace("/(app)/profiles");
+                }
             } catch {
                 // token is corrupt or missing stay in auth
             } finally {
                 setIsLoading(false);
             }
-        })
-    })
+        })();
+    }, [])
 }
