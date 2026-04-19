@@ -29,11 +29,11 @@ export default function SplashScreen() {
       useNativeDriver: false,
     }).start();
 
-    // const timer = setTimeout(async () => {
-    //     router.replace(router.replace("/(auth)/sign-in"));
-    // }, 2000);
+    const timer = setTimeout(async () => {
+        router.replace(router.replace("/(auth)/sign-in"));
+    }, 2000);
 
-    // return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, []);
 
   const loaderWidth = loaderAnim.interpolate({

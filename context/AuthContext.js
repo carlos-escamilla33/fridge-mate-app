@@ -7,7 +7,7 @@ const AuthContext = createContext(null);
 const TOKEN_KEY = "fridgemate_token";
 const USER_KEY = "fridgemate_user";
 
-// const API_BASE = processColor.env.API_URL;
+const API_BASE = process.env.API_URL;
 
 export function AuthProvider({children}) {
     const [user, setUser] = useState(null);
@@ -30,17 +30,25 @@ export function AuthProvider({children}) {
                     setUser(JSON.parse(storedUser));
                     router.replace("/(app)/profiles");
                 } 
-                // else {
-                //     router.replace("/(auth)/sign-in");
-                // }
+                else {
+                    router.replace("/(auth)/sign-in");
+                }
             } catch {
                 // token is corrupt or missing stay in auth
-                // router.replace("/(auth)/sign-in");
+                router.replace("/(auth)/sign-in");
             } finally {
                 setIsLoading(false);
             }
         })();
     }, [])
+
+    async function signIn(email, password) {
+        try {
+            
+        } catch(err) {
+            console.log(err);
+        }
+    }
 
     return (
         <AuthContext.Provider value={{user, token, isLoading}}>
