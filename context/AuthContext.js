@@ -29,9 +29,13 @@ export function AuthProvider({children}) {
                     setToken(storedToken);
                     setUser(JSON.parse(storedUser));
                     router.replace("/(app)/profiles");
-                }
+                } 
+                // else {
+                //     router.replace("/(auth)/sign-in");
+                // }
             } catch {
                 // token is corrupt or missing stay in auth
+                // router.replace("/(auth)/sign-in");
             } finally {
                 setIsLoading(false);
             }

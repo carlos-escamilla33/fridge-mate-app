@@ -30,18 +30,7 @@ export default function SplashScreen() {
     }).start();
 
     // const timer = setTimeout(async () => {
-    //   try {
-    //     const token = await SecureStore.getItemAsync("fridgemate_token");
-    //     const user = await SecureStore.getItemAsync("fridgemate_user");
-    //     if (token && user) {
-    //       router.replace("/(app)/profiles");
-    //     } else {
-    //       router.replace("/(auth)/sign-in");
-    //     }
-    //   } catch {
-    //     // router.replace("/(auth)/sign-in");
-
-    //   }
+    //     router.replace(router.replace("/(auth)/sign-in"));
     // }, 2000);
 
     // return () => clearTimeout(timer);
