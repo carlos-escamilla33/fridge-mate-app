@@ -2,6 +2,7 @@
   "expo": {
     "name": "fridge-mate-app",
     "slug": "fridge-mate-app",
+    "scheme": "fridgemate",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +11,6 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff",
-    "scheme": "fridgemate"
     },
     "assetBundlePatterns": [
       "**/*"
