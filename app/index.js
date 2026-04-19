@@ -49,8 +49,9 @@ export default function SplashScreen() {
 
   const loaderWidth = loaderAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0%", "75%"],
+    outputRange: ['0%', '75%'],
   });
+
 
   return (
     <View style={styles.container}>
@@ -63,10 +64,10 @@ export default function SplashScreen() {
         <View style={styles.iconWrap}>
           <Text style={styles.icon}>🥬</Text>
         </View>
-        <Text>FridgeMate</Text>
-        <Text>Nothing goes to waste.</Text>
-        <View>
-            <Animated.View />
+        <Text style={styles.title}>FridgeMate</Text>
+        <Text style={styles.tagline}>Nothing goes to waste.</Text>
+        <View style={styles.loaderTrack}>
+            <Animated.View style={[styles.loaderFill, {width: loaderWidth}]}/>
         </View>
       </Animated.View>
     </View>
@@ -102,5 +103,23 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         color: Colors.textOnDark,
         letterSpacing: -0.5,
+    },
+    tagline: {
+        fontSize: 15,
+        color: Colors.textOnDarkMuted,
+        letterSpacing: 0.2,
+        marginBottom: 32
+    },
+    loaderTrack: {
+        width: 48,
+        height: 4,
+        backgroundColor: "rgba(255,255,255,0.12)",
+        borderRadius: 2,
+        overflow: "hidden",
+    },
+    loaderFill: {
+        height: "100%",
+        backgroundColor: Colors.sage,
+        borderRadius: 2,
     }
 })
