@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import callApi from "../api";
 import * as SecureStore from "expo-secure-store";
 import {router} from "expo-router";
 
@@ -6,8 +7,6 @@ const AuthContext = createContext(null);
 
 const TOKEN_KEY = "fridgemate_token";
 const USER_KEY = "fridgemate_user";
-
-const API_BASE = process.env.API_URL;
 
 export function AuthProvider({children}) {
     const [user, setUser] = useState(null);
@@ -44,8 +43,25 @@ export function AuthProvider({children}) {
 
     async function signIn(email, password) {
         try {
-            
+            const res = await callApi({url: "/api/auth/login"});
+
+            if (res.message != "You Successfully Logged In!") {
+                throw new Error("Error in signing in");
+            }
+
+            // const data = await res
         } catch(err) {
+            console.log(err);
+        }
+    }
+
+    async function persist(newToken, newUser) {
+        try {
+            await SecureStore.setItemAsync(TOKEN_KEY, newToken);
+            await SecureStore.setItemAsync(USER_KEY, JSON.stringify(newUser));
+            setToken(newToken);
+            setUser(newUser);
+        } catch (err) {
             console.log(err);
         }
     }
