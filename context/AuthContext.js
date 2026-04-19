@@ -33,4 +33,16 @@ export function AuthProvider({children}) {
             }
         })();
     }, [])
+
+    return (
+        <AuthContext.Provider value={{user, token, isLoading}}>
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export function useAuth() {
+    const ctx = useContext(AuthContext);
+    if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
+    return ctx;
 }
