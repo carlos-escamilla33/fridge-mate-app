@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import Colors from '../constants/colors';
 
 export default function SplashScreen() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -61,7 +61,7 @@ export default function SplashScreen() {
         ]}
       >
         <View style={styles.iconWrap}>
-          <Text>🥬</Text>
+          <Text style={styles.icon}>🥬</Text>
         </View>
         <Text>FridgeMate</Text>
         <Text>Nothing goes to waste.</Text>
@@ -93,5 +93,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginBottom: 8,
+    },
+    icon: {
+        fontSize: 38
+    },
+    title: {
+        fontSize: 38,
+        fontWeight: "700",
+        color: Colors.textOnDark,
+        letterSpacing: -0.5,
     }
 })
