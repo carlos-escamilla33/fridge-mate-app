@@ -41,6 +41,7 @@ export function AuthProvider({children}) {
         })();
     }, [])
 
+    // Fix: Come back and update this function to the correct methods if needed
     async function signIn(email, password) {
         try {
             const res = await callApi({url: "/api/auth/login", body: {email, password}});
