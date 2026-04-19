@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import Colors from '@/constants/colors';
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export default function SplashScreen() {
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -52,8 +52,14 @@ export default function SplashScreen() {
     })
 
     return (
-        <View style={StyleSheet.container}>
+        <View style={stykes.container}>
 
         </View>
     )
+
+    const styles = StyleSheet.create({
+        container: {
+            
+        }
+    })
 }
