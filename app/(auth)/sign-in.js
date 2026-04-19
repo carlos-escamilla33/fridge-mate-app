@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 40,
-    alignItems: "flex-start",
+    alignItems: "center"
   },
   iconWrap: {
     width: 52,
