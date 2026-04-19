@@ -45,4 +45,15 @@ export default function SplashScreen() {
 
         return () => clearTimeout(timer);
     }, []);
+
+    const loaderWidth = loaderAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ["0%", "75%"],
+    })
+
+    return (
+        <View style={StyleSheet.container}>
+
+        </View>
+    )
 }
