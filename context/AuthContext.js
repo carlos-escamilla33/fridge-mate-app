@@ -16,8 +16,8 @@ export function AuthProvider({children}) {
     // checking for token in storage for auto login
     // ***Fix*** Look into how long the token stays valid in storage
     //           Right now I think the user is able to login and see the profiles screens even if its expired
-    //          Meaning that the user will take the token and be redirected to the profiles and see user into
-    //          It wont be after they click on a profile that the app will have them relogin
+    //          Meaning that the user will take the token and be redirected to the profiles and see user info
+    //          It wont be till after they click on a profile that the app will have them relogin
     useEffect(() => {
         (async () => {
             try {
