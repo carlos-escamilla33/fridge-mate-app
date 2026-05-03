@@ -1,10 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import Colors from "../constants/colors";
+import { useAuth } from "../context/AuthContext";
 
 export default function SplashScreen() {
+  const { isLoading, user } = useAuth();
+  const [animationDone, setAnimationDone] = useState(false);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(24)).current;
   const loaderAnim = useRef(new Animated.Value(0)).current;
@@ -27,24 +30,14 @@ export default function SplashScreen() {
       toValue: 1,
       duration: 1800,
       useNativeDriver: false,
-    }).start();
-
-    // const timer = setTimeout(async () => {
-    //   try {
-    //     const token = await SecureStore.getItemAsync("fridgemate_token");
-    //     const user = await SecureStore.getItemAsync("fridgemate_user");
-    //     if (token && user) {
-    //       router.replace("/(app)/profiles");
-    //     } else {
-    //       router.replace("/(auth)/sign-in");
-    //     }
-    //   } catch {
-    //     router.replace("/(auth)/sign-in");
-    //   }
-    // }, 10000);
-
-    return () => clearTimeout(timer);
+    }).start(() => setAnimationDone(true));
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && animationDone) {
+      router.replace(user ? "/(app)/profiles" : "/(auth)/sign-in");
+    }
+  }, [isLoading, animationDone]);
 
   const loaderWidth = loaderAnim.interpolate({
     inputRange: [0, 1],
