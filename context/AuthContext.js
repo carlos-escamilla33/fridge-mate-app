@@ -54,6 +54,14 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function register(account_name, first_name, last_name, email, password) {
+    try {
+
+    } catch (err) {
+        console.log(err);
+    }
+  }
+
   async function persist(newToken, newUser) {
     try {
       await SecureStore.setItemAsync(TOKEN_KEY, newToken);
@@ -66,7 +74,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading }}>
+    <AuthContext.Provider value={{ user, token, isLoading, register }}>
       {children}
     </AuthContext.Provider>
   );
