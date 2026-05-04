@@ -15,6 +15,23 @@ function TabIcon({ focused, emoji, label }) {
   );
 }
 
+export default function AppLayout() {
+    return (
+        <Tabs
+            screenOptions={{
+                headerShown: false,
+                tabBarStyle: styles.tabBar,
+                tabBarShowLabel: false,
+            }}
+        >
+            <Tabs.Screen 
+                name="profiles"
+                options={{href: null}}
+            />
+        </Tabs>
+    )
+}
+
 const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: Colors.white,
