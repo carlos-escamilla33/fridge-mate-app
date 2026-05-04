@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function register(account_name, first_name, last_name, email, password) {
+  async function register(account_name, first_name, email, password) {
     try {
 
     } catch (err) {

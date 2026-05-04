@@ -26,7 +26,22 @@ export default function RegisterScreen() {
   const [errors, setErrors] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function validate() {}
+  function validate() {
+    const e = {}
+
+    if (!name.trim()) e.name = "Your name is required";
+    if (!email.trim()) e.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(email)) e.email = 'Enter a valid email.';
+
+    if (!password) e.password = "Password is required";
+    else if (password.length < 8) e.password = "Must be at least 8 characters";
+
+    if (!confirm) e.confirm = "Please confirm your password";
+    else if (confirm != password) e.confirm = "Passwords don't match";
+    setErrors(e);
+
+    return Object.keys(e).length == 0;
+  }
 
   async function handleRegister() {}
 
@@ -157,7 +172,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   header: {
-    marginBottom: 36,
+    marginBottom: 28,
   },
   title: {
     fontSize: 32,
