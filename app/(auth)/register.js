@@ -62,11 +62,21 @@ export default function RegisterScreen() {
             </View>
           )}
 
+          <Input 
+          label="Account Name"
+          value={accountName}
+          onChangeText={setAccountName}
+          placeholder="e.g. Pug's Fridge"
+          error={errors.name}
+          returnKeyType="next"
+          autoCapitalize="words"
+          />
+
           <Input
-            label="Your Name"
+            label="Frist Name"
             value={name}
             onChangeText={setName}
-            placeholder="e.g. Carlos"
+            placeholder="e.g. Riley"
             error={errors.name}
             returnKeyType="next"
             autoCapitalize="words"
