@@ -1,13 +1,18 @@
 import { Tabs } from "expo-router";
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Colors from "../../constants/colors";
 
-function TabIcon({focused, emoji, label}) {
-    return (
-        <View>
-
-        </View>
-    )
+function TabIcon({ focused, emoji, label }) {
+  return (
+    <View style={styles.tabEmoji}>
+      <Text style={[styles.tabEmoji, !focused && styles.tabEmojiInactive]}>
+        {emoji}
+      </Text>
+      <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
+        {label}
+      </Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -20,7 +25,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   tabItem: {
-    alignItems: 'center',
+    alignItems: "center",
     gap: 3,
   },
   tabEmoji: {
@@ -31,7 +36,7 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 10,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.textMuted,
   },
   tabLabelActive: {
@@ -42,8 +47,8 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: Colors.forest,
     borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 16,
     shadowColor: Colors.forest,
     shadowOffset: { width: 0, height: 4 },
@@ -57,4 +62,3 @@ const styles = StyleSheet.create({
     lineHeight: 30,
   },
 });
- 
