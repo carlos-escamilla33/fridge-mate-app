@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { router } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import {
   KeyboardAvoidingView,
