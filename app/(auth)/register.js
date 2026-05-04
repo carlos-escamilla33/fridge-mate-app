@@ -43,7 +43,18 @@ export default function RegisterScreen() {
     return Object.keys(e).length == 0;
   }
 
-  async function handleRegister() {}
+  async function handleRegister() {
+    if (!validate()) return;
+    setLoading(true);
+    setErrors({});
+    try {
+        await register(name.trim(), email.trim().toLowerCase(), password)
+    } catch (err) {
+        setErrors({general: err.message ?? "Could not create account: Try again."});
+    } finally {
+        setIsLoading(false);
+    }
+  }
 
   return (
     <KeyboardAvoidingView
