@@ -38,4 +38,8 @@ export default function ProfilesScreen() {
         }),
       ]).start()
     }, []);
+
+    function handleSelectProfile(member) {
+      router.replace("/(app)/home");
+    }
 }
