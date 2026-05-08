@@ -12,6 +12,8 @@ import { router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import Colors from '../../constants/colors';
 
+const AVATAR_COLORS = ['#4A7C45', '#C07B48', '#5B7FA6', '#A0507A', '#7A6FA0'];
+
 export default function ProfilesScreen() {
     const {user} = useAuth
     const fadeAmin = useRef(new Animated.Value(0)).current;
@@ -50,8 +52,22 @@ export default function ProfilesScreen() {
     function renderMember({item, index}) {
       const color = AVATAR_COLORS[index % AVATAR_COLORS.length];
       return (
-        <TouchableOpacity>
-
+        <TouchableOpacity
+          style={styles.profileCard}
+          onPress={() => handleSelectProfile(item)}
+          activeOpacity={0.75}
+        >
+          <View style={[styles.avatar, {backgroundColor: color}]}>
+            <Text style={styles.avatarText}>{getInitials(item.name)}</Text>
+          </View>
+          <Text style={styles.profileName}>{item.name}</Text>
+          {
+            item.isAdmin && (
+              <View style={styles.adminBadge}>
+                <Text style={styles.adminBadgeText}>Admin</Text>
+              </View>
+            )
+          }
         </TouchableOpacity>
       )
     }
@@ -78,8 +94,9 @@ export default function ProfilesScreen() {
                         <Text style={styles.addAvatarText}>Add Member</Text>
                       </View>
                     </TouchableOpacity>
-                  )
+                  );
                 }
+              return renderMember({item, index});
               }}
             />
 
