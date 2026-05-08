@@ -35,7 +35,7 @@ export default function SplashScreen() {
 
   useEffect(() => {
     if (!isLoading && animationDone) {
-      router.replace(user ? "/(app)/profiles" : "/(app)/profiles"); // change back to sign-in screen are profiles development
+      router.replace(user ? "/(app)/profiles" : "/(app)/home"); // change back to sign-in screen are profiles development
     }
   }, [isLoading, animationDone]);
 

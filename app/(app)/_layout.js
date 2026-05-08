@@ -16,20 +16,25 @@ function TabIcon({ focused, emoji, label }) {
 }
 
 export default function AppLayout() {
-    return (
-        <Tabs
-            screenOptions={{
-                headerShown: false,
-                tabBarStyle: styles.tabBar,
-                tabBarShowLabel: false,
-            }}
-        >
-            <Tabs.Screen 
-                name="profiles"
-                options={{href: null}}
-            />
-        </Tabs>
-    )
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: styles.tabBar,
+        tabBarShowLabel: false,
+      }}
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} emoji="🧊" label="Fridge" />
+          ),
+        }}
+      />
+      <Tabs.Screen name="profiles" options={{ href: null }} />
+    </Tabs>
+  );
 }
 
 const styles = StyleSheet.create({
