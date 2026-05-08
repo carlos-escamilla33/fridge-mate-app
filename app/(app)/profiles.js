@@ -55,6 +55,39 @@ export default function ProfilesScreen() {
         </TouchableOpacity>
       )
     }
+
+    return (
+      <View style={styles.container}>
+        <SafeAreaView style={styles.safe}>
+          <Animated.View
+            style={[
+              styles.content,
+              {opacity: fadeAmin, transform: [{translateY: slideAnim}]}
+            ]}
+          >
+            <Text style={styles.title}>Who's cooking?</Text>
+            <Text style={styles.subtitle}>Select your profile to continue</Text>
+
+            <FlatList
+              data={[...members, {id: "add", name: "Add Member", isAdd: true}]}
+              renderItem={({item, index}) => {
+                if (item.isAdd) {
+                  return (
+                    <TouchableOpacity style={styles.profileCard} activeOpacity={0.75}>
+                      <View style={styles.addAvatar}>
+                        <Text style={styles.addAvatarText}>Add Member</Text>
+                      </View>
+                    </TouchableOpacity>
+                  )
+                }
+              }}
+            />
+
+          </Animated.View>
+        </SafeAreaView>
+
+      </View>
+    )
 }
 
 const styles = StyleSheet.create({
