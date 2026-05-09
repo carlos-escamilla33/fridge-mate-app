@@ -105,8 +105,18 @@ export default function HomeScreen() {
   })
 
   return (
-    <View >
-
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Our Fridge</Text>
+            <Text style={styles.date}>{today}</Text>
+          </View>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{getInitials(user?.name)}</Text>
+          </View>
+        </View> 
+      </SafeAreaView>
     </View>
   )
 }
