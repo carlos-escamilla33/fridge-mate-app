@@ -61,3 +61,27 @@ const MOCK_ITEMS = [
     expiryDate: new Date(Date.now() + 1 * 86400000).toISOString(),
   },
 ];
+
+function getDaysUntilExpiry(expiryDate) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const expiry = new Date(expiryDate);
+    expiry.setHours(0, 0, 0, 0);
+    return Math.round(expiry - today) / (100 * 60 * 60 * 24);
+}
+
+export default function HomeScreen() {
+  const {user} = useAuth();
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const expiringCount = MOCK_ITEMS.filter(
+    (i) => getDaysUntilExpiry(i.expiryDate) <= 3
+  ).length;
+
+  const filteredItems = MOCK_ITEMS.filter((item) => {
+    if (activeFilter === "All") return true;
+    if (activeFilter === "Expiring Soon") return getDaysUntilExpiry(item.expiryDate) <= 3;
+    
+    return item.category === activeFilter;
+  })
+}
