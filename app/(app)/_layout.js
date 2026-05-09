@@ -48,14 +48,14 @@ export default function AppLayout() {
           ),
         }}
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="profile"
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} emoji="👤" label="Profile" />
           ),
         }}
-      /> */}
+      />
       <Tabs.Screen name="profiles" options={{ href: null }} />
     </Tabs>
   );
