@@ -32,6 +32,32 @@ export default function AppLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="add-item"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.addBtn}>
+              <Text style={styles.addBtnText}>+</Text>
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="recipes"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} emoji="🍳" label="Recipes" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} emoji="👤" label="Profile" />
+          ),
+        }}
+      />
       <Tabs.Screen name="profiles" options={{ href: null }} />
     </Tabs>
   );
