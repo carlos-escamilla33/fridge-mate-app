@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   View,
   Text,
@@ -6,92 +6,91 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
-} from 'react-native';
-import { useAuth } from '../../context/AuthContext';
-// import FoodItem from '../../components/ui/FoodItem';
-import Colors from '../../constants/colors';
- 
-const FILTERS = ['All', 'Expiring Soon', 'Dairy', 'Produce', 'Meat', 'Other'];
+} from "react-native";
+import { useAuth } from "../../context/AuthContext";
+import FoodItem from "../../components/FoodItem";
+import Colors from "../../constants/colors";
+
+const FILTERS = ["All", "Expiring Soon", "Dairy", "Produce", "Meat", "Other"];
 
 // Placeholder data — replace with API calls to your backend
 const MOCK_ITEMS = [
   {
-    id: '1',
-    name: 'Whole Milk',
-    emoji: '🥛',
-    quantity: '1 gal',
-    addedBy: 'Ana',
-    category: 'Dairy',
+    id: "1",
+    name: "Whole Milk",
+    emoji: "🥛",
+    quantity: "1 gal",
+    addedBy: "Ana",
+    category: "Dairy",
     expiryDate: new Date().toISOString(),
   },
   {
-    id: '2',
-    name: 'Blueberries',
-    emoji: '🫐',
-    quantity: '1 pint',
-    addedBy: 'Carlos',
-    category: 'Produce',
+    id: "2",
+    name: "Blueberries",
+    emoji: "🫐",
+    quantity: "1 pint",
+    addedBy: "Carlos",
+    category: "Produce",
     expiryDate: new Date(Date.now() + 2 * 86400000).toISOString(),
   },
   {
-    id: '3',
-    name: 'Broccoli',
-    emoji: '🥦',
-    quantity: '1 head',
-    addedBy: 'Carlos',
-    category: 'Produce',
+    id: "3",
+    name: "Broccoli",
+    emoji: "🥦",
+    quantity: "1 head",
+    addedBy: "Carlos",
+    category: "Produce",
     expiryDate: new Date(Date.now() + 6 * 86400000).toISOString(),
   },
   {
-    id: '4',
-    name: 'Sharp Cheddar',
-    emoji: '🧀',
-    quantity: '8 oz',
-    addedBy: 'Ana',
-    category: 'Dairy',
+    id: "4",
+    name: "Sharp Cheddar",
+    emoji: "🧀",
+    quantity: "8 oz",
+    addedBy: "Ana",
+    category: "Dairy",
     expiryDate: new Date(Date.now() + 12 * 86400000).toISOString(),
   },
   {
-    id: '5',
-    name: 'Chicken Breast',
-    emoji: '🍗',
-    quantity: '2 lbs',
-    addedBy: 'Carlos',
-    category: 'Meat',
+    id: "5",
+    name: "Chicken Breast",
+    emoji: "🍗",
+    quantity: "2 lbs",
+    addedBy: "Carlos",
+    category: "Meat",
     expiryDate: new Date(Date.now() + 1 * 86400000).toISOString(),
   },
 ];
 
 function getDaysUntilExpiry(expiryDate) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expiry = new Date(expiryDate);
-    expiry.setHours(0, 0, 0, 0);
-    return Math.round(expiry - today) / (100 * 60 * 60 * 24);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const expiry = new Date(expiryDate);
+  expiry.setHours(0, 0, 0, 0);
+  return Math.round((expiry - today) / (1000 * 60 * 60 * 24));
 }
 
 export default function HomeScreen() {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [activeFilter, setActiveFilter] = useState("All");
 
   const expiringCount = MOCK_ITEMS.filter(
-    (i) => getDaysUntilExpiry(i.expiryDate) <= 3
+    (i) => getDaysUntilExpiry(i.expiryDate) <= 3,
   ).length;
 
   const filteredItems = MOCK_ITEMS.filter((item) => {
     if (activeFilter === "All") return true;
-    if (activeFilter === "Expiring Soon") return getDaysUntilExpiry(item.expiryDate) <= 3;
-    
+    if (activeFilter === "Expiring Soon")
+      return getDaysUntilExpiry(item.expiryDate) <= 3;
     return item.category === activeFilter;
   });
 
   const expiringItems = filteredItems.filter(
-    (i) => getDaysUntilExpiry(i.expiryDate) <= 3
-  )
-
+    (i) => getDaysUntilExpiry(i.expiryDate) <= 3,
+  );
   const freshItems = filteredItems.filter(
-    (i) => getDaysUntilExpiry(i.expiryDate) > 3
-  )
+    (i) => getDaysUntilExpiry(i.expiryDate) > 3,
+  );
 
   function getInitials(name) {
     if (!name) return "Y";
@@ -102,11 +101,12 @@ export default function HomeScreen() {
     weekday: "long",
     month: "long",
     day: "numeric",
-  })
+  });
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safe}>
+        {/* Header */}
         <View style={styles.header}>
           <View>
             <Text style={styles.title}>Our Fridge</Text>
@@ -115,10 +115,92 @@ export default function HomeScreen() {
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>{getInitials(user?.name)}</Text>
           </View>
-        </View> 
+        </View>
+
+        {/* Filter tabs */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.filterScrollView}
+          contentContainerStyle={styles.filterScroll}
+        >
+          {FILTERS.map((f) => (
+            <TouchableOpacity
+              key={f}
+              style={[
+                styles.filterTab,
+                activeFilter === f && styles.filterTabActive,
+              ]}
+              onPress={() => setActiveFilter(f)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  styles.filterTabText,
+                  activeFilter === f && styles.filterTabTextActive,
+                ]}
+              >
+                {f}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Expiry warning banner */}
+          {expiringCount > 0 && (
+            <View style={styles.expiryBanner}>
+              <Text style={styles.expiryBannerIcon}>⚠️</Text>
+              <Text style={styles.expiryBannerText}>
+                <Text style={styles.expiryBannerBold}>
+                  {expiringCount} item{expiringCount > 1 ? "s" : ""}
+                </Text>{" "}
+                expiring within 3 days.
+              </Text>
+            </View>
+          )}
+
+          {/* Expiring soon section */}
+          {expiringItems.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Expiring Soon</Text>
+              <View style={styles.itemList}>
+                {expiringItems.map((item) => (
+                  <FoodItem key={item.id} item={item} />
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* Fresh section */}
+          {freshItems.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Fresh</Text>
+              <View style={styles.itemList}>
+                {freshItems.map((item) => (
+                  <FoodItem key={item.id} item={item} />
+                ))}
+              </View>
+            </View>
+          )}
+
+          {filteredItems.length === 0 && (
+            <View style={styles.empty}>
+              <Text style={styles.emptyEmoji}>🥬</Text>
+              <Text style={styles.emptyText}>Nothing here yet.</Text>
+              <Text style={styles.emptySubtext}>
+                Tap + to add your first item.
+              </Text>
+            </View>
+          )}
+        </ScrollView>
       </SafeAreaView>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -130,16 +212,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 12,
   },
   title: {
     fontSize: 26,
-    fontWeight: '700',
+    fontWeight: "700",
     color: Colors.textPrimary,
     letterSpacing: -0.5,
   },
@@ -153,17 +235,22 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: Colors.moss,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatarText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     color: Colors.textOnDark,
+  },
+  filterScrollView: {
+    maxHeight: 44,
+    marginBottom: 12,
   },
   filterScroll: {
     paddingHorizontal: 20,
-    paddingBottom: 12,
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   filterTab: {
@@ -171,13 +258,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 7,
+    height: 34,
+    justifyContent: "center",
   },
   filterTabActive: {
     backgroundColor: Colors.forest,
   },
   filterTabText: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.bark,
   },
   filterTabTextActive: {
@@ -194,11 +283,11 @@ const styles = StyleSheet.create({
   expiryBanner: {
     backgroundColor: Colors.warnBg,
     borderWidth: 1,
-    borderColor: '#F0D4A8',
+    borderColor: "#F0D4A8",
     borderRadius: 14,
     padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
   },
   expiryBannerIcon: {
@@ -211,24 +300,24 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
   expiryBannerBold: {
-    fontWeight: '600',
-    color: '#5C3D10',
+    fontWeight: "600",
+    color: "#5C3D10",
   },
   section: {
     gap: 10,
   },
   sectionTitle: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     letterSpacing: 0.6,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     color: Colors.textMuted,
   },
   itemList: {
     gap: 10,
   },
   empty: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 80,
     gap: 8,
   },
@@ -238,7 +327,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.textPrimary,
   },
   emptySubtext: {
@@ -246,4 +335,3 @@ const styles = StyleSheet.create({
     color: Colors.bark,
   },
 });
- 
