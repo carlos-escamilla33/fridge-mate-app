@@ -36,9 +36,7 @@ export default function AppLayout() {
         name="add-item"
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={styles.addBtn}>
-              <Text style={styles.addBtnText}>+</Text>
-            </View>
+            <TabIcon focused={focused} emoji="➕" label="Add Item" />
           ),
         }}
       />
@@ -77,6 +75,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   tabEmoji: {
+    alignItems: "center",
     fontSize: 22,
   },
   tabEmojiInactive: {
@@ -91,13 +90,12 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   addBtn: {
-    width: 50,
-    height: 50,
+    width: 54,
+    height: 54,
     backgroundColor: Colors.forest,
-    borderRadius: 16,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16,
     shadowColor: Colors.forest,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
