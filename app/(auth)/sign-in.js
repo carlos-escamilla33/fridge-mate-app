@@ -37,8 +37,19 @@ export default function SignInScreen() {
   }
 
   async function handleSignIn() {
-    // chcek to see if there are any errors
+    // check to see if errors populate
     if (!validate()) return;
+    // 
+    setLoading(true);
+    setErrors({});
+    try {
+        const res = await signIn(email.trim().toLowerCase(), password);
+        if (res) router.push("/(app)/profiles");
+    } catch (err) {
+        setErrors({general: err.message ?? "Could not sign-in: Try again."});
+    } finally {
+        setIsLoading(false);
+    }
   }
 
   return (
