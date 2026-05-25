@@ -22,7 +22,24 @@ export default function SignInScreen() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  async function handleSignIn() {}
+    function validate() {
+    const e = {}
+
+    if (!email.trim()) e.email = "Your email is required";
+    else if (!/\S+@\S+\.\S+/.test(email)) e.email = 'Enter a valid email.';
+
+    if (!password) e.password = "Password is required";
+    else if (password.length < 8) e.password = "Must be at least 8 characters";
+
+    setErrors(e);
+
+    return Object.keys(e).length == 0;
+  }
+
+  async function handleSignIn() {
+    // chcek to see if there are any errors
+    if (!validate()) return;
+  }
 
   return (
     <KeyboardAvoidingView
@@ -53,7 +70,7 @@ export default function SignInScreen() {
             label="Email"
             value={email}
             onChangeText={setEmail}
-            placeholder="you@email.com"
+            placeholder="example@email.com"
             keyboardType="email-address"
             error={errors.email}
             returnKeyType="next"

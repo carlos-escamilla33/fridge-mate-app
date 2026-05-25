@@ -48,7 +48,8 @@ export function AuthProvider({ children }) {
       }
       const data = await res.json();
       await persist(data.accessToken, data.account.user);
-      // router.replace("/(app)/profiles");
+
+      return data;
     } catch (err) {
       console.log(err);
     }
