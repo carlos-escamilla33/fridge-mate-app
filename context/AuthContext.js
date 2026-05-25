@@ -57,7 +57,21 @@ export function AuthProvider({ children }) {
 
   async function register(account_name, first_name, email, password) {
     try {
+      const res = await callApi({
+        url: "/api/auth/register",
+        body: {account_name, first_name, email, password}
+      })
 
+      if (res.message != "You Successfully Registered!") {
+        throw new Error("Error in registering");
+      }
+
+      const data = await res.json();
+      await persist(data.accessToken, data.account.user);
+
+      console.log(data);
+
+      return data;
     } catch (err) {
         console.log(err);
     }

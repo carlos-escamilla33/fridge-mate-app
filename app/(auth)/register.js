@@ -29,9 +29,10 @@ export default function RegisterScreen() {
   function validate() {
     const e = {}
 
+    if (!accountName) e.accountName = "Your account name is required"
     if (!name.trim()) e.name = "Your name is required";
     if (!email.trim()) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(email)) e.email = 'Enter a valid email.';
+    else if (!/\S+@\S+\.\S+/.test(email)) e.email = 'Enter a valid email';
 
     if (!password) e.password = "Password is required";
     else if (password.length < 8) e.password = "Must be at least 8 characters";
@@ -93,7 +94,7 @@ export default function RegisterScreen() {
           value={accountName}
           onChangeText={setAccountName}
           placeholder="e.g. Pug's Fridge"
-          error={errors.name}
+          error={errors.accountName}
           returnKeyType="next"
           autoCapitalize="words"
           />
