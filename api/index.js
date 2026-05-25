@@ -1,4 +1,4 @@
-const API_BASE = process.env.API_URL;
+const API_BASE = process.env.EXPO_PUBLIC_API_URL;
 
 export default async function callApi({url, method, token, body}) {
     try {
@@ -14,11 +14,14 @@ export default async function callApi({url, method, token, body}) {
         const response = await fetch(`${API_BASE}${url}`, options);
         const result = await response.json();
 
+        console.log(result);
+
         if (result.error) {
-            throw (result.error);
+            throw new Error(result.error);
         }
         return result;
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }

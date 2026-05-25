@@ -19,7 +19,6 @@ export default function RegisterScreen() {
 
   const [accountName, setAccountName] = useState("");
   const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -49,11 +48,14 @@ export default function RegisterScreen() {
     setLoading(true);
     setErrors({});
     try {
-        await register(name.trim(), email.trim().toLowerCase(), password)
+        // account_name, first_name, email, password
+        const res = await register(accountName.trim(), name.trim(), email.trim().toLowerCase(), password);
+
+        if (res) router.push("/(app)/profiles");
     } catch (err) {
         setErrors({general: err.message ?? "Could not create account: Try again."});
     } finally {
-        setIsLoading(false);
+        setLoading(false);
     }
   }
 
@@ -100,7 +102,7 @@ export default function RegisterScreen() {
           />
 
           <Input
-            label="Frist Name"
+            label="First Name"
             value={name}
             onChangeText={setName}
             placeholder="e.g. Riley"

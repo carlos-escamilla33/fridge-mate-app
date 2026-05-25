@@ -35,45 +35,37 @@ export function AuthProvider({ children }) {
     initialize();
   }, []);
 
-  // Fix: Come back and update this function to the correct methods if needed
   async function signIn(email, password) {
     try {
-      const res = await callApi({
+      const data = await callApi({
         url: "/api/auth/login",
         body: { email, password },
       });
 
-      if (res.message != "You Successfully Logged In!") {
-        throw new Error("Error in signing in");
-      }
-      const data = await res.json();
       await persist(data.accessToken, data.account.user);
 
       return data;
     } catch (err) {
       console.log(err);
+      throw err;
     }
   }
 
   async function register(account_name, first_name, email, password) {
     try {
-      const res = await callApi({
+      const data = await callApi({
         url: "/api/auth/register",
-        body: {account_name, first_name, email, password}
-      })
+        method: "POST",
+        token: null,
+        body: { account_name, first_name, email, password },
+      });
 
-      if (res.message != "You Successfully Registered!") {
-        throw new Error("Error in registering");
-      }
-
-      const data = await res.json();
       await persist(data.accessToken, data.account.user);
-
       console.log(data);
-
       return data;
     } catch (err) {
-        console.log(err);
+      console.log(err);
+      throw err;
     }
   }
 
