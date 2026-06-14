@@ -39,10 +39,13 @@ export function AuthProvider({ children }) {
     try {
       const data = await callApi({
         url: "/api/auth/login",
+        method: "POST",
+        token: null,
         body: { email, password },
       });
 
-      await persist(data.accessToken, data.account.user);
+      await persist(String(data.accessToken), String(data.account.user));
+      console.log(data);
 
       return data;
     } catch (err) {
@@ -71,6 +74,7 @@ export function AuthProvider({ children }) {
 
       await persist(data.accessToken, data.account.user);
       console.log(data);
+
       return data;
     } catch (err) {
       console.log(err);
@@ -101,7 +105,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, register, signOut }}>
+    <AuthContext.Provider value={{ user, token, isLoading, register, signOut, signIn }}>
       {children}
     </AuthContext.Provider>
   );
