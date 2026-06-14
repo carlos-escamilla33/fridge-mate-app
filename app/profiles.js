@@ -9,13 +9,13 @@ import {
   SafeAreaView,
 } from "react-native";
 import { router } from "expo-router";
-import { useAuth } from "../../context/AuthContext";
-import Colors from "../../constants/colors";
+import { useAuth } from "../context/AuthContext";
+import Colors from "../constants/colors";
 
 const AVATAR_COLORS = ["#4A7C45", "#C07B48", "#5B7FA6", "#A0507A", "#7A6FA0"];
 
 export default function ProfilesScreen() {
-  const { user } = useAuth;
+  const { user } = useAuth();
   const fadeAmin = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 

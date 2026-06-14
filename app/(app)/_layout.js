@@ -56,7 +56,6 @@ export default function AppLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="profiles" options={{ href: null }} />
     </Tabs>
   );
 }
