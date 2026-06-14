@@ -22,11 +22,11 @@ export default function SignInScreen() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-    function validate() {
-    const e = {}
+  function validate() {
+    const e = {};
 
     if (!email.trim()) e.email = "Your email is required";
-    else if (!/\S+@\S+\.\S+/.test(email)) e.email = 'Enter a valid email.';
+    else if (!/\S+@\S+\.\S+/.test(email)) e.email = "Enter a valid email.";
 
     if (!password) e.password = "Password is required";
     else if (password.length < 8) e.password = "Must be at least 8 characters";
@@ -39,16 +39,16 @@ export default function SignInScreen() {
   async function handleSignIn() {
     // check to see if errors populate
     if (!validate()) return;
-    // 
+
     setLoading(true);
     setErrors({});
     try {
-        const res = await signIn(email.trim().toLowerCase(), password);
-        if (res) router.push("/(app)/profiles");
+      await signIn(email.trim().toLowerCase(), password);
+      router.replace("/profiles");
     } catch (err) {
-        setErrors({general: err.message ?? "Could not sign-in: Try again."});
+      setErrors({ general: err.message ?? "Could not sign-in: Try again." });
     } finally {
-        setIsLoading(false);
+      setLoading(false);
     }
   }
 
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 40,
-    alignItems: "center"
+    alignItems: "center",
   },
   iconWrap: {
     width: 52,
