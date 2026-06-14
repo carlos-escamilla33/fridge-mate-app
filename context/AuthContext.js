@@ -51,6 +51,15 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function signOut() {
+    try {
+      await clearAllKeys();
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
   async function register(account_name, first_name, email, password) {
     try {
       const data = await callApi({
@@ -80,8 +89,19 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function clearAllKeys() {
+    const keysToClear = [TOKEN_KEY, USER_KEY];
+
+    for (const key of keysToClear) {
+      await SecureStore.deleteItemAsync(key);
+    }
+
+    setToken(null);
+    setUser(null);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, register }}>
+    <AuthContext.Provider value={{ user, token, isLoading, register, signOut }}>
       {children}
     </AuthContext.Provider>
   );
