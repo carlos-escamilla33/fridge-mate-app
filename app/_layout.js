@@ -16,6 +16,7 @@ function AuthGate() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="profiles" options={{ headerShown: false }} />
+      <Stack.Screen name="create-profile" options={{ headerShown: false }} />
     </Stack>
   );
 }

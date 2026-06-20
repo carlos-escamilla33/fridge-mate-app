@@ -90,6 +90,7 @@ export default function ProfilesScreen() {
                   <TouchableOpacity
                     style={styles.profileCard}
                     activeOpacity={0.75}
+                    onPress={() => router.push("/create-profile")}
                   >
                     <View style={styles.addAvatar}>
                       <Text style={styles.addAvatarText}>+</Text>
