@@ -9,6 +9,7 @@ const USER_KEY = "fridgemate_user";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [account, setAccount] = useState(null);
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
