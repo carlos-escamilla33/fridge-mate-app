@@ -30,7 +30,7 @@ export function AccountProvider({ children }) {
       url: "/api/accounts/register-profile",
       method: "POST",
       token,
-      body: { name},
+      body: {name, last_name: "escamilla"},
     });
     setMembers((prev) => [...prev, data.member]);
   }
