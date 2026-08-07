@@ -6,26 +6,31 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
-} from 'react-native';
-import { useAuth } from '../../context/AuthContext';
-import Colors from '../../constants/colors';
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { useAuth } from "../../context/AuthContext";
+import Colors from "../../constants/colors";
 
 function SettingsRow({ icon, label, onPress, danger }) {
   return (
     <TouchableOpacity
-      style={[styles.settingsRow, danger && styles.settingsRowDanger]}
+      style={styles.settingsRow}
       onPress={onPress}
       activeOpacity={0.7}
     >
       <View style={styles.settingsLeft}>
         <View style={[styles.settingsIcon, danger && styles.settingsIconDanger]}>
-          <Text style={styles.settingsIconText}>{icon}</Text>
+          <Feather
+            name={icon}
+            size={16}
+            color={danger ? Colors.dangerText : Colors.textSecondary}
+          />
         </View>
         <Text style={[styles.settingsLabel, danger && styles.settingsLabelDanger]}>
           {label}
         </Text>
       </View>
-      {!danger && <Text style={styles.chevron}>›</Text>}
+      {!danger && <Feather name="chevron-right" size={16} color={Colors.textMuted} />}
     </TouchableOpacity>
   );
 }
@@ -34,37 +39,32 @@ export default function ProfileScreen() {
   const { user, signOut } = useAuth();
 
   function getInitials(name) {
-    if (!name) return 'Y';
+    if (!name) return "Y";
     return name
-      .split(' ')
+      .split(" ")
       .map((n) => n[0])
-      .join('')
+      .join("")
       .toUpperCase()
       .slice(0, 2);
   }
 
   function handleSignOut() {
-    Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Sign Out', style: 'destructive', onPress: signOut },
-      ]
-    );
+    Alert.alert("Sign Out", "Are you sure you want to sign out?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Sign Out", style: "destructive", onPress: signOut },
+    ]);
   }
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safe}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {/* Hero */}
           <View style={styles.hero}>
             <View style={styles.bigAvatar}>
               <Text style={styles.bigAvatarText}>{getInitials(user?.name)}</Text>
             </View>
-            <Text style={styles.heroName}>{user?.name ?? 'Your Name'}</Text>
-            <Text style={styles.heroEmail}>{user?.email ?? ''}</Text>
+            <Text style={styles.heroName}>{user?.name ?? "Your Name"}</Text>
+            <Text style={styles.heroEmail}>{user?.email ?? ""}</Text>
             {user?.isAdmin && (
               <View style={styles.adminBadge}>
                 <Text style={styles.adminBadgeText}>Household Admin</Text>
@@ -72,7 +72,6 @@ export default function ProfileScreen() {
             )}
           </View>
 
-          {/* Stats */}
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={styles.statNum}>24</Text>
@@ -88,34 +87,28 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          {/* Settings */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Preferences</Text>
             <View style={styles.settingsGroup}>
-              <SettingsRow icon="🔔" label="Notifications" onPress={() => {}} />
-              <SettingsRow icon="⏰" label="Expiry Reminders" onPress={() => {}} />
+              <SettingsRow icon="bell" label="Notifications" onPress={() => {}} />
+              <SettingsRow icon="clock" label="Expiry Reminders" onPress={() => {}} />
             </View>
           </View>
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Household</Text>
             <View style={styles.settingsGroup}>
-              <SettingsRow icon="👥" label="Manage Members" onPress={() => {}} />
-              <SettingsRow icon="🏠" label="Household Settings" onPress={() => {}} />
+              <SettingsRow icon="users" label="Manage Members" onPress={() => {}} />
+              <SettingsRow icon="settings" label="Household Settings" onPress={() => {}} />
             </View>
           </View>
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
             <View style={styles.settingsGroup}>
-              <SettingsRow icon="✏️" label="Edit Profile" onPress={() => {}} />
-              <SettingsRow icon="🔒" label="Change Password" onPress={() => {}} />
-              <SettingsRow
-                icon="🚪"
-                label="Sign Out"
-                onPress={handleSignOut}
-                danger
-              />
+              <SettingsRow icon="edit-2" label="Edit Profile" onPress={() => {}} />
+              <SettingsRow icon="lock" label="Change Password" onPress={() => {}} />
+              <SettingsRow icon="log-out" label="Sign Out" onPress={handleSignOut} danger />
             </View>
           </View>
 
@@ -129,74 +122,66 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.cream,
+    backgroundColor: Colors.bg,
   },
   safe: {
     flex: 1,
   },
   hero: {
-    backgroundColor: Colors.forest,
-    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+    alignItems: "center",
     paddingTop: 32,
-    paddingBottom: 48,
-    gap: 6,
+    paddingBottom: 28,
+    gap: 4,
   },
   bigAvatar: {
     width: 76,
     height: 76,
     borderRadius: 38,
-    backgroundColor: Colors.sage,
-    borderWidth: 3,
-    borderColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: Colors.accentLight,
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 8,
   },
   bigAvatarText: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#1A2E18',
+    fontWeight: "700",
+    color: Colors.accentText,
   },
   heroName: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: Colors.textOnDark,
+    fontSize: 20,
+    fontWeight: "700",
+    color: Colors.textPrimary,
     letterSpacing: -0.3,
   },
   heroEmail: {
     fontSize: 13,
-    color: Colors.textOnDarkMuted,
+    color: Colors.textSecondary,
   },
   adminBadge: {
-    backgroundColor: Colors.sage,
+    backgroundColor: Colors.accentLight,
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 4,
-    marginTop: 4,
+    marginTop: 6,
   },
   adminBadgeText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#1A2E18',
+    fontWeight: "600",
+    color: Colors.accentText,
   },
   statsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.white,
     borderBottomWidth: 1,
-    borderColor: Colors.border,
-    marginTop: -24,
-    marginHorizontal: 20,
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
+    borderBottomColor: Colors.border,
+    marginBottom: 8,
   },
   statItem: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 16,
   },
   statBorder: {
@@ -205,80 +190,71 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
   },
   statNum: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: "700",
     color: Colors.textPrimary,
-    letterSpacing: -0.5,
+    letterSpacing: -0.4,
   },
   statDesc: {
     fontSize: 11,
-    color: Colors.bark,
+    color: Colors.textSecondary,
     marginTop: 2,
-    textAlign: 'center',
+    textAlign: "center",
   },
   section: {
     paddingHorizontal: 20,
-    paddingTop: 28,
-    gap: 10,
+    paddingTop: 24,
+    gap: 8,
   },
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: "600",
     letterSpacing: 0.6,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     color: Colors.textMuted,
   },
   settingsGroup: {
     backgroundColor: Colors.white,
-    borderRadius: 16,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: Colors.border,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   settingsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderColor: Colors.border,
-  },
-  settingsRowDanger: {
-    borderColor: Colors.dangerBg,
+    borderBottomColor: Colors.borderLight,
   },
   settingsLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   settingsIcon: {
     width: 32,
     height: 32,
-    backgroundColor: Colors.parchment,
+    backgroundColor: Colors.bg,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   settingsIconDanger: {
     backgroundColor: Colors.dangerBg,
   },
-  settingsIconText: {
-    fontSize: 15,
-  },
   settingsLabel: {
     fontSize: 14,
     color: Colors.textPrimary,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   settingsLabelDanger: {
     color: Colors.dangerText,
   },
-  chevron: {
-    fontSize: 18,
-    color: Colors.textMuted,
-  },
   version: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 12,
     color: Colors.textMuted,
     paddingVertical: 32,

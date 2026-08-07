@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import Button from "../../components/Button";
@@ -16,31 +16,26 @@ import Colors from "../../constants/colors";
 
 export default function RegisterScreen() {
   const { register } = useAuth();
-
   const [accountName, setAccountName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [errors, setErrors] = useState("");
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   function validate() {
-    const e = {}
-
-    if (!accountName) e.accountName = "Your account name is required"
+    const e = {};
+    if (!accountName.trim()) e.accountName = "Household name is required";
     if (!name.trim()) e.name = "Your name is required";
     if (!email.trim()) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(email)) e.email = 'Enter a valid email';
-
+    else if (!/\S+@\S+\.\S+/.test(email)) e.email = "Enter a valid email";
     if (!password) e.password = "Password is required";
     else if (password.length < 8) e.password = "Must be at least 8 characters";
-
     if (!confirm) e.confirm = "Please confirm your password";
-    else if (confirm != password) e.confirm = "Passwords don't match";
+    else if (confirm !== password) e.confirm = "Passwords don't match";
     setErrors(e);
-
-    return Object.keys(e).length == 0;
+    return Object.keys(e).length === 0;
   }
 
   async function handleRegister() {
@@ -48,14 +43,12 @@ export default function RegisterScreen() {
     setLoading(true);
     setErrors({});
     try {
-        // account_name, first_name, email, password
-        const res = await register(accountName.trim(), name.trim(), email.trim().toLowerCase(), password);
-
-        if (res) router.push("/(app)/profiles");
+      await register(accountName.trim(), name.trim(), email.trim().toLowerCase(), password);
+      router.replace("/profiles");
     } catch (err) {
-        setErrors({general: err.message ?? "Could not create account: Try again."});
+      setErrors({ general: err.message ?? "Could not create account. Try again." });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   }
 
@@ -91,18 +84,17 @@ export default function RegisterScreen() {
             </View>
           )}
 
-          <Input 
-          label="Account Name"
-          value={accountName}
-          onChangeText={setAccountName}
-          placeholder="e.g. Pug's Fridge"
-          error={errors.accountName}
-          returnKeyType="next"
-          autoCapitalize="words"
-          />
-
           <Input
-            label="First Name"
+            label="Household Name"
+            value={accountName}
+            onChangeText={setAccountName}
+            placeholder="e.g. The Martinez Fridge"
+            error={errors.accountName}
+            returnKeyType="next"
+            autoCapitalize="words"
+          />
+          <Input
+            label="Your First Name"
             value={name}
             onChangeText={setName}
             placeholder="e.g. Riley"
@@ -110,7 +102,6 @@ export default function RegisterScreen() {
             returnKeyType="next"
             autoCapitalize="words"
           />
-
           <Input
             label="Email"
             value={email}
@@ -120,7 +111,6 @@ export default function RegisterScreen() {
             error={errors.email}
             returnKeyType="next"
           />
-
           <Input
             label="Password"
             value={password}
@@ -130,7 +120,6 @@ export default function RegisterScreen() {
             error={errors.password}
             returnKeyType="next"
           />
-
           <Input
             label="Confirm Password"
             value={confirm}
@@ -142,10 +131,11 @@ export default function RegisterScreen() {
             onSubmitEditing={handleRegister}
           />
 
-          <Text style={styles.adminNote}>
-            🔑 As the account creator, you'll have admin access — you can manage
-            members and settings.
-          </Text>
+          <View style={styles.adminNote}>
+            <Text style={styles.adminNoteText}>
+              As the account creator you'll have admin access — manage members and settings after setup.
+            </Text>
+          </View>
 
           <Button
             label="Create Household"
@@ -169,12 +159,12 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    backgroundColor: Colors.cream,
+    backgroundColor: Colors.bg,
   },
   scroll: {
     flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 56,
+    paddingTop: 60,
     paddingBottom: 40,
   },
   backBtn: {
@@ -182,22 +172,22 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: 14,
-    color: Colors.bark,
+    color: Colors.textSecondary,
     fontWeight: "500",
   },
   header: {
-    marginBottom: 28,
+    marginBottom: 32,
   },
   title: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: "700",
     color: Colors.textPrimary,
-    letterSpacing: -0.5,
+    letterSpacing: -0.6,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 15,
-    color: Colors.bark,
+    color: Colors.textSecondary,
     lineHeight: 22,
   },
   form: {
@@ -205,7 +195,9 @@ const styles = StyleSheet.create({
   },
   errorBanner: {
     backgroundColor: Colors.dangerBg,
-    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    borderRadius: 10,
     padding: 12,
     marginBottom: 12,
   },
@@ -215,14 +207,16 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   adminNote: {
-    fontSize: 13,
-    color: Colors.bark,
-    backgroundColor: Colors.parchment,
-    borderRadius: 12,
+    backgroundColor: Colors.accentLight,
+    borderRadius: 10,
     padding: 12,
-    lineHeight: 19,
     marginTop: 4,
     marginBottom: 4,
+  },
+  adminNoteText: {
+    fontSize: 13,
+    color: Colors.accentText,
+    lineHeight: 19,
   },
   submitBtn: {
     marginTop: 12,
@@ -235,11 +229,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: Colors.bark,
+    color: Colors.textSecondary,
   },
   footerLink: {
     fontSize: 14,
-    color: Colors.moss,
-    fontWeight: "500",
+    color: Colors.accentText,
+    fontWeight: "600",
   },
 });

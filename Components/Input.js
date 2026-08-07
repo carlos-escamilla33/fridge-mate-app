@@ -1,26 +1,14 @@
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../constants/colors';
- 
-export default function Input({
-  label,
-  error,
-  secureToggle = false,
-  style,
-  ...props
-}) {
+
+export default function Input({ label, error, secureToggle = false, style, ...props }) {
   const [visible, setVisible] = useState(!secureToggle);
   const [focused, setFocused] = useState(false);
- 
+
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.label}>{label}</Text>
+      {label && <Text style={styles.label}>{label}</Text>}
       <View
         style={[
           styles.inputRow,
@@ -52,34 +40,31 @@ export default function Input({
     </View>
   );
 }
- 
+
 const styles = StyleSheet.create({
   wrapper: {
     marginBottom: 16,
   },
   label: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '500',
-    color: Colors.bark,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
+    color: Colors.textSecondary,
     marginBottom: 7,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.parchment,
+    backgroundColor: Colors.white,
     borderWidth: 1,
-    borderColor: Colors.inputBorder,
-    borderRadius: 12,
+    borderColor: Colors.border,
+    borderRadius: 10,
     paddingHorizontal: 14,
   },
   inputFocused: {
-    borderColor: Colors.moss,
-    backgroundColor: Colors.white,
+    borderColor: Colors.accent,
   },
   inputError: {
-    borderColor: Colors.dangerText,
+    borderColor: Colors.danger,
   },
   input: {
     flex: 1,
@@ -92,7 +77,7 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     fontSize: 13,
-    color: Colors.moss,
+    color: Colors.accentText,
     fontWeight: '500',
   },
   errorText: {

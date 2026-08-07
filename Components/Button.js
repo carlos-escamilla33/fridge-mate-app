@@ -1,9 +1,4 @@
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Colors from '../constants/colors';
 
 export default function Button({
@@ -21,7 +16,7 @@ export default function Button({
     <TouchableOpacity
       onPress={onPress}
       disabled={isDisabled}
-      activeOpacity={0.8}
+      activeOpacity={0.85}
       style={[
         styles.base,
         variant === 'primary' && styles.primary,
@@ -34,7 +29,7 @@ export default function Button({
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === 'primary' ? Colors.textOnDark : Colors.textPrimary}
+          color={variant === 'primary' ? Colors.white : Colors.accent}
         />
       ) : (
         <Text
@@ -57,7 +52,7 @@ export default function Button({
 const styles = StyleSheet.create({
   base: {
     width: '100%',
-    borderRadius: 14,
+    borderRadius: 12,
     paddingVertical: 15,
     paddingHorizontal: 20,
     alignItems: 'center',
@@ -65,12 +60,12 @@ const styles = StyleSheet.create({
     minHeight: 52,
   },
   primary: {
-    backgroundColor: Colors.forest,
+    backgroundColor: Colors.accent,
   },
   secondary: {
-    backgroundColor: Colors.parchment,
+    backgroundColor: Colors.white,
     borderWidth: 1,
-    borderColor: Colors.inputBorder,
+    borderColor: Colors.border,
   },
   ghost: {
     backgroundColor: Colors.transparent,
@@ -80,19 +75,19 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 15,
-    fontWeight: '500',
-    letterSpacing: 0.2,
+    fontWeight: '600',
+    letterSpacing: 0.1,
   },
   labelPrimary: {
-    color: Colors.textOnDark,
+    color: Colors.white,
   },
   labelSecondary: {
     color: Colors.textPrimary,
   },
   labelGhost: {
-    color: Colors.moss,
+    color: Colors.accentText,
   },
   labelDisabled: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
 });

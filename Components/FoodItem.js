@@ -1,13 +1,23 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../constants/colors';
 
+const CATEGORY_COLORS = {
+  Dairy: '#3B82F6',
+  Produce: '#10B981',
+  Meat: '#EF4444',
+  Seafood: '#06B6D4',
+  Grains: '#F59E0B',
+  Drinks: '#8B5CF6',
+  Snacks: '#F97316',
+  Other: '#6B7280',
+};
+
 function getExpiryInfo(expiryDate) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const expiry = new Date(expiryDate);
   expiry.setHours(0, 0, 0, 0);
-  const diffMs = expiry - today;
-  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  const diffDays = Math.round((expiry - today) / (1000 * 60 * 60 * 24));
 
   if (diffDays < 0) return { label: 'Expired', style: 'danger' };
   if (diffDays === 0) return { label: 'Today', style: 'danger' };
@@ -18,34 +28,28 @@ function getExpiryInfo(expiryDate) {
 
 export default function FoodItem({ item, onPress }) {
   const expiry = getExpiryInfo(item.expiryDate);
+  const color = CATEGORY_COLORS[item.category] ?? CATEGORY_COLORS.Other;
+  const initial = item.name ? item.name[0].toUpperCase() : '?';
 
   const pillStyle =
-    expiry.style === 'danger'
-      ? styles.pillDanger
-      : expiry.style === 'warn'
-      ? styles.pillWarn
-      : styles.pillOk;
+    expiry.style === 'danger' ? styles.pillDanger
+    : expiry.style === 'warn' ? styles.pillWarn
+    : styles.pillOk;
 
   const pillTextStyle =
-    expiry.style === 'danger'
-      ? styles.pillTextDanger
-      : expiry.style === 'warn'
-      ? styles.pillTextWarn
-      : styles.pillTextOk;
+    expiry.style === 'danger' ? styles.pillTextDanger
+    : expiry.style === 'warn' ? styles.pillTextWarn
+    : styles.pillTextOk;
 
   return (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={onPress}
-      activeOpacity={0.75}
-    >
-      <View style={styles.emojiWrap}>
-        <Text style={styles.emoji}>{item.emoji ?? '🥡'}</Text>
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
+      <View style={[styles.iconWrap, { backgroundColor: color + '18' }]}>
+        <Text style={[styles.iconText, { color }]}>{initial}</Text>
       </View>
       <View style={styles.info}>
         <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
         <Text style={styles.meta}>
-          Added by {item.addedBy ?? 'You'} · {item.quantity ?? ''}
+          {item.addedBy ?? 'You'}{item.quantity ? ` · ${item.quantity}` : ''}
         </Text>
       </View>
       <View style={[styles.pill, pillStyle]}>
@@ -57,26 +61,26 @@ export default function FoodItem({ item, onPress }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.card,
     borderWidth: 1,
     borderColor: Colors.border,
-    borderRadius: 16,
-    padding: 12,
+    borderRadius: 14,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
-  emojiWrap: {
-    width: 46,
-    height: 46,
-    backgroundColor: Colors.parchment,
-    borderRadius: 12,
+  iconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
   },
-  emoji: {
-    fontSize: 24,
+  iconText: {
+    fontSize: 18,
+    fontWeight: '700',
   },
   info: {
     flex: 1,
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
   },
   meta: {
     fontSize: 12,
-    color: Colors.bark,
+    color: Colors.textSecondary,
     marginTop: 2,
   },
   pill: {

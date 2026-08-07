@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   View,
   Text,
@@ -8,30 +8,31 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-} from 'react-native';
-import { router } from 'expo-router';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
-import Colors from '../../constants/colors';
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import Button from "../../components/Button";
+import Input from "../../components/Input";
+import Colors from "../../constants/colors";
 
-const CATEGORIES = ['Produce', 'Dairy', 'Meat', 'Seafood', 'Grains', 'Drinks', 'Snacks', 'Other'];
+const CATEGORIES = ["Produce", "Dairy", "Meat", "Seafood", "Grains", "Drinks", "Snacks", "Other"];
 
 export default function AddItemScreen() {
-  const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [category, setCategory] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
+  const [name, setName] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [category, setCategory] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   function validate() {
     const e = {};
-    if (!name.trim()) e.name = 'Item name is required.';
-    if (!expiryDate.trim()) e.expiryDate = 'Expiration date is required.';
+    if (!name.trim()) e.name = "Item name is required.";
+    if (!expiryDate.trim()) e.expiryDate = "Expiration date is required.";
     else {
       const parsed = new Date(expiryDate);
-      if (isNaN(parsed.getTime())) e.expiryDate = 'Enter a valid date (MM/DD/YYYY).';
+      if (isNaN(parsed.getTime())) e.expiryDate = "Enter a valid date (MM/DD/YYYY).";
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -40,28 +41,18 @@ export default function AddItemScreen() {
   async function handleAdd() {
     if (!validate()) return;
     setLoading(true);
-
-    // TODO: POST to your backend
-    // await fetch(`${API_BASE}/items`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    //   body: JSON.stringify({ name, quantity, category, expiryDate }),
-    // });
-
     setTimeout(() => {
       setLoading(false);
       setSuccess(true);
-      setTimeout(() => {
-        router.replace('/(app)/home');
-      }, 800);
+      setTimeout(() => router.replace("/(app)/home"), 800);
     }, 600);
   }
 
   function handleAddAnother() {
-    setName('');
-    setQuantity('');
-    setCategory('');
-    setExpiryDate('');
+    setName("");
+    setQuantity("");
+    setCategory("");
+    setExpiryDate("");
     setErrors({});
     setSuccess(false);
   }
@@ -69,7 +60,7 @@ export default function AddItemScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <SafeAreaView style={styles.flex}>
         <ScrollView
@@ -77,32 +68,31 @@ export default function AddItemScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.back()} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <Text style={styles.closeBtn}>✕</Text>
+            <TouchableOpacity
+              onPress={() => router.back()}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <Feather name="x" size={20} color={Colors.textSecondary} />
             </TouchableOpacity>
             <Text style={styles.title}>Add Item</Text>
-            <View style={{ width: 24 }} />
+            <View style={{ width: 20 }} />
           </View>
 
-          {/* Scan zone */}
           <TouchableOpacity style={styles.scanZone} activeOpacity={0.75}>
             <View style={styles.scanIconWrap}>
-              <Text style={styles.scanIcon}>📷</Text>
+              <Feather name="camera" size={26} color={Colors.textSecondary} />
             </View>
             <Text style={styles.scanTitle}>Scan item or receipt</Text>
-            <Text style={styles.scanSubtitle}>AI will identify & estimate expiry</Text>
+            <Text style={styles.scanSubtitle}>AI will identify and estimate expiry</Text>
           </TouchableOpacity>
 
-          {/* Divider */}
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
             <Text style={styles.dividerText}>or enter manually</Text>
             <View style={styles.dividerLine} />
           </View>
 
-          {/* Form */}
           <View style={styles.form}>
             <Input
               label="Item Name"
@@ -134,7 +124,6 @@ export default function AddItemScreen() {
               </View>
             </View>
 
-            {/* Category picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Category</Text>
               <ScrollView
@@ -149,12 +138,7 @@ export default function AddItemScreen() {
                     onPress={() => setCategory(c)}
                     activeOpacity={0.7}
                   >
-                    <Text
-                      style={[
-                        styles.categoryChipText,
-                        category === c && styles.categoryChipTextActive,
-                      ]}
-                    >
+                    <Text style={[styles.categoryChipText, category === c && styles.categoryChipTextActive]}>
                       {c}
                     </Text>
                   </TouchableOpacity>
@@ -164,7 +148,8 @@ export default function AddItemScreen() {
 
             {success ? (
               <View style={styles.successBanner}>
-                <Text style={styles.successText}>✓ Item added to your fridge!</Text>
+                <Feather name="check-circle" size={18} color={Colors.successText} />
+                <Text style={styles.successText}>Item added to your fridge!</Text>
               </View>
             ) : (
               <>
@@ -174,11 +159,7 @@ export default function AddItemScreen() {
                   loading={loading}
                   style={styles.submitBtn}
                 />
-                <Button
-                  label="Add Another"
-                  onPress={handleAddAnother}
-                  variant="secondary"
-                />
+                <Button label="Add Another" onPress={handleAddAnother} variant="secondary" />
               </>
             )}
           </View>
@@ -191,67 +172,58 @@ export default function AddItemScreen() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    backgroundColor: Colors.cream,
+    backgroundColor: Colors.bg,
   },
   scroll: {
     paddingHorizontal: 20,
     paddingBottom: 40,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingTop: 16,
     paddingBottom: 20,
   },
-  closeBtn: {
-    fontSize: 18,
-    color: Colors.bark,
-  },
   title: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 17,
+    fontWeight: "600",
     color: Colors.textPrimary,
-    letterSpacing: -0.3,
+    letterSpacing: -0.2,
   },
   scanZone: {
-    backgroundColor: Colors.parchment,
+    backgroundColor: Colors.white,
     borderWidth: 1.5,
-    borderColor: Colors.inputBorder,
-    borderStyle: 'dashed',
-    borderRadius: 20,
-    height: 160,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: Colors.border,
+    borderStyle: "dashed",
+    borderRadius: 16,
+    height: 148,
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
     marginBottom: 24,
   },
   scanIconWrap: {
     width: 52,
     height: 52,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.borderLight,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  scanIcon: {
-    fontSize: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 2,
   },
   scanTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.textPrimary,
   },
   scanSubtitle: {
     fontSize: 12,
-    color: Colors.bark,
+    color: Colors.textSecondary,
   },
   divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     marginBottom: 24,
   },
@@ -268,7 +240,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   rowHalf: {
@@ -278,35 +250,34 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   inputLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: Colors.bark,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
+    fontSize: 13,
+    fontWeight: "500",
+    color: Colors.textSecondary,
     marginBottom: 10,
   },
   categoryScroll: {
     gap: 8,
   },
   categoryChip: {
-    backgroundColor: Colors.parchment,
+    backgroundColor: Colors.white,
     borderWidth: 1,
-    borderColor: Colors.inputBorder,
+    borderColor: Colors.border,
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
   categoryChipActive: {
-    backgroundColor: Colors.forest,
-    borderColor: Colors.forest,
+    backgroundColor: Colors.accent,
+    borderColor: Colors.accent,
   },
   categoryChipText: {
     fontSize: 13,
-    fontWeight: '500',
-    color: Colors.bark,
+    fontWeight: "500",
+    color: Colors.textSecondary,
   },
   categoryChipTextActive: {
-    color: Colors.textOnDark,
+    color: Colors.white,
+    fontWeight: "600",
   },
   submitBtn: {
     marginTop: 8,
@@ -314,14 +285,16 @@ const styles = StyleSheet.create({
   },
   successBanner: {
     backgroundColor: Colors.successBg,
-    borderRadius: 14,
+    borderRadius: 12,
     padding: 16,
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
     marginTop: 8,
   },
   successText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.successText,
   },
 });

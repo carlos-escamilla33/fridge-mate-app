@@ -7,16 +7,23 @@ const AuthContext = createContext(null);
 const TOKEN_KEY = "fridgemate_token";
 const USER_KEY = "fridgemate_user";
 
+function isTokenExpired(token) {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return true;
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(base64));
+    return !payload.exp || payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [account, setAccount] = useState(null);
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // ***Fix*** Look into how long the token stays valid in storage
-  //           Right now I think the user is able to login and see the profiles screens even if its expired
-  //          Meaning that the user will take the token and be redirected to the profiles and see user info
-  //          It wont be till after they click on a profile that the app will have them relogin
   useEffect(() => {
     async function initialize() {
       try {
@@ -24,11 +31,17 @@ export function AuthProvider({ children }) {
         const storedUser = await SecureStore.getItemAsync(USER_KEY);
 
         if (storedToken && storedUser) {
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
+          if (isTokenExpired(storedToken)) {
+            await SecureStore.deleteItemAsync(TOKEN_KEY);
+            await SecureStore.deleteItemAsync(USER_KEY);
+          } else {
+            const parsedUser = JSON.parse(storedUser);
+            setToken(storedToken);
+            setUser(parsedUser);
+          }
         }
       } catch {
-        // token is corrupt or missing, stay logged out
+        // corrupt storage — stay logged out
       } finally {
         setIsLoading(false);
       }
@@ -37,70 +50,53 @@ export function AuthProvider({ children }) {
   }, []);
 
   async function signIn(email, password) {
-    try {
-      const data = await callApi({
-        url: "/api/auth/login",
-        method: "POST",
-        token: null,
-        body: { email, password },
-      });
-
-      await persist(String(data.accessToken), String(data.account.user));
-      console.log(data);
-
-      return data;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    const data = await callApi({
+      url: "/api/auth/login",
+      method: "POST",
+      token: null,
+      body: { email, password },
+    });
+    await persist(data.accessToken, buildUser(data));
+    return data;
   }
 
   async function signOut() {
-    try {
-      await clearAllKeys();
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    await clearAllKeys();
   }
 
   async function register(account_name, first_name, email, password) {
-    try {
-      const data = await callApi({
-        url: "/api/auth/register",
-        method: "POST",
-        token: null,
-        body: { account_name, first_name, email, password },
-      });
+    const data = await callApi({
+      url: "/api/auth/register",
+      method: "POST",
+      token: null,
+      body: { account_name, first_name, email, password },
+    });
+    await persist(data.accessToken, buildUser(data));
+    return data;
+  }
 
-      await persist(data.accessToken, data.account.user);
-      console.log(data);
-
-      return data;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+  function buildUser(data) {
+    return {
+      id: data.profile?.profile_id ?? data.account?.account_id,
+      name: data.profile?.first_name,
+      email: data.account?.email,
+      account_id: data.account?.account_id,
+      account_name: data.account?.account_name,
+    };
   }
 
   async function persist(newToken, newUser) {
-    try {
-      await SecureStore.setItemAsync(TOKEN_KEY, newToken);
-      await SecureStore.setItemAsync(USER_KEY, JSON.stringify(newUser));
-      setToken(newToken);
-      setUser(newUser);
-    } catch (err) {
-      console.log(err);
-    }
+    const tokenStr = String(newToken ?? '');
+    const userStr = JSON.stringify(newUser ?? null);
+    await SecureStore.setItemAsync(TOKEN_KEY, tokenStr);
+    await SecureStore.setItemAsync(USER_KEY, userStr);
+    setToken(tokenStr);
+    setUser(newUser ?? null);
   }
 
   async function clearAllKeys() {
-    const keysToClear = [TOKEN_KEY, USER_KEY];
-
-    for (const key of keysToClear) {
-      await SecureStore.deleteItemAsync(key);
-    }
-
+    await SecureStore.deleteItemAsync(TOKEN_KEY);
+    await SecureStore.deleteItemAsync(USER_KEY);
     setToken(null);
     setUser(null);
   }

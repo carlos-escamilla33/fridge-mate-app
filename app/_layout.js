@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Stack, router } from "expo-router";
-import { AuthProvider } from "../context/AuthContext";
-import { useAuth } from "../context/AuthContext";
+import { AuthProvider, useAuth } from "../context/AuthContext";
+import { AccountProvider } from "../context/AccountContext";
 
 function AuthGate() {
   const { user, isLoading } = useAuth();
@@ -14,9 +14,9 @@ function AuthGate() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="profiles" options={{ headerShown: false }} />
-      <Stack.Screen name="create-profile" options={{ headerShown: false }} />
+      <Stack.Screen name="index" />
+      <Stack.Screen name="profiles" />
+      <Stack.Screen name="create-profile" />
     </Stack>
   );
 }
@@ -24,7 +24,9 @@ function AuthGate() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <AuthGate />
+      <AccountProvider>
+        <AuthGate />
+      </AccountProvider>
     </AuthProvider>
   );
 }

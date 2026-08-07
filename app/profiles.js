@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -7,61 +7,62 @@ import {
   FlatList,
   Animated,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useAuth } from "../context/AuthContext";
+import { useAccount } from "../context/AccountContext";
 import Colors from "../constants/colors";
 
-const AVATAR_COLORS = ["#4A7C45", "#C07B48", "#5B7FA6", "#A0507A", "#7A6FA0"];
+const AVATAR_COLORS = [
+  '#10B981', '#3B82F6', '#F59E0B', '#8B5CF6', '#EF4444',
+];
 
 export default function ProfilesScreen() {
-  const { user } = useAuth();
-  const fadeAmin = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
-
-  // Fix this to come from backend later on
-  // ONLY FOR TESTING PURPOSES
-
-  const [members] = useState([
-    { id: user?.id ?? "1", name: user?.name ?? "You", isAdmin: true },
-  ]);
+  const { members, fetchMembers, isLoading } = useAccount();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
+    fetchMembers();
     Animated.parallel([
-      Animated.timing(fadeAmin, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 450,
-        useNativeDriver: true,
-      }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 450, useNativeDriver: true }),
+      Animated.timing(slideAnim, { toValue: 0, duration: 400, useNativeDriver: true }),
     ]).start();
   }, []);
 
-  function handleSelectProfile(member) {
-    router.replace("/(app)/home");
-  }
-
   function getInitials(name) {
-    return name[0].toUpperCase();
+    return name ? name[0].toUpperCase() : "?";
   }
 
   function renderMember({ item, index }) {
+    if (item.isAdd) {
+      return (
+        <TouchableOpacity
+          style={styles.profileCard}
+          activeOpacity={0.7}
+          onPress={() => router.push("/create-profile")}
+        >
+          <View style={styles.addAvatar}>
+            <Feather name="user-plus" size={22} color={Colors.textMuted} />
+          </View>
+          <Text style={styles.addLabel}>Add member</Text>
+        </TouchableOpacity>
+      );
+    }
+
     const color = AVATAR_COLORS[index % AVATAR_COLORS.length];
     return (
       <TouchableOpacity
         style={styles.profileCard}
-        onPress={() => handleSelectProfile(item)}
-        activeOpacity={0.75}
+        onPress={() => router.replace("/(app)/home")}
+        activeOpacity={0.7}
       >
-        <View style={[styles.avatar, { backgroundColor: color }]}>
-          <Text style={styles.avatarText}>{getInitials(item.name)}</Text>
+        <View style={[styles.avatar, { backgroundColor: color + '1A' }]}>
+          <Text style={[styles.avatarText, { color }]}>{getInitials(item.name)}</Text>
         </View>
         <Text style={styles.profileName}>{item.name}</Text>
-        {item.isAdmin && (
+        {item.is_admin && (
           <View style={styles.adminBadge}>
             <Text style={styles.adminBadgeText}>Admin</Text>
           </View>
@@ -74,39 +75,24 @@ export default function ProfilesScreen() {
     <View style={styles.container}>
       <SafeAreaView style={styles.safe}>
         <Animated.View
-          style={[
-            styles.content,
-            { opacity: fadeAmin, transform: [{ translateY: slideAnim }] },
-          ]}
+          style={[styles.content, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}
         >
           <Text style={styles.title}>Who's cooking?</Text>
           <Text style={styles.subtitle}>Select your profile to continue</Text>
 
-          <FlatList
-            data={[...members, { id: "add", name: "Add Member", isAdd: true }]}
-            renderItem={({ item, index }) => {
-              if (item.isAdd) {
-                return (
-                  <TouchableOpacity
-                    style={styles.profileCard}
-                    activeOpacity={0.75}
-                    onPress={() => router.push("/create-profile")}
-                  >
-                    <View style={styles.addAvatar}>
-                      <Text style={styles.addAvatarText}>+</Text>
-                    </View>
-                    <Text style={styles.addLabel}>Add member</Text>
-                  </TouchableOpacity>
-                );
-              }
-              return renderMember({ item, index });
-            }}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            columnWrapperStyle={styles.row}
-            contentContainerStyle={styles.grid}
-            scrollEnabled={false}
-          />
+          {isLoading ? (
+            <ActivityIndicator size="large" color={Colors.accent} style={styles.loader} />
+          ) : (
+            <FlatList
+              data={[...members, { id: "add", name: "Add Member", isAdd: true }]}
+              renderItem={renderMember}
+              keyExtractor={(item) => String(item.id)}
+              numColumns={2}
+              columnWrapperStyle={styles.row}
+              contentContainerStyle={styles.grid}
+              scrollEnabled={false}
+            />
+          )}
         </Animated.View>
       </SafeAreaView>
     </View>
@@ -116,7 +102,7 @@ export default function ProfilesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.forest,
+    backgroundColor: Colors.bg,
   },
   safe: {
     flex: 1,
@@ -130,14 +116,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: Colors.textOnDark,
-    marginBottom: 8,
+    color: Colors.textPrimary,
+    marginBottom: 6,
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 14,
-    color: Colors.textOnDarkMuted,
+    color: Colors.textSecondary,
     marginBottom: 40,
+  },
+  loader: {
+    marginTop: 40,
   },
   grid: {
     gap: 12,
@@ -147,14 +136,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   profileCard: {
-    width: 140,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    width: 148,
+    backgroundColor: Colors.card,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
-    borderRadius: 20,
-    padding: 20,
+    borderColor: Colors.border,
+    borderRadius: 18,
+    padding: 22,
     alignItems: "center",
     gap: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   avatar: {
     width: 60,
@@ -166,42 +160,36 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 22,
     fontWeight: "700",
-    color: Colors.textOnDark,
   },
   profileName: {
     fontSize: 14,
     fontWeight: "500",
-    color: Colors.textOnDark,
+    color: Colors.textPrimary,
   },
   adminBadge: {
-    backgroundColor: Colors.sage,
+    backgroundColor: Colors.accentLight,
     borderRadius: 8,
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 3,
   },
   adminBadgeText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#1A2E18",
+    color: Colors.accentText,
   },
   addAvatar: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: Colors.borderLight,
     borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: Colors.border,
     borderStyle: "dashed",
     alignItems: "center",
     justifyContent: "center",
   },
-  addAvatarText: {
-    fontSize: 26,
-    color: "rgba(255,255,255,0.35)",
-    lineHeight: 30,
-  },
   addLabel: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.35)",
+    color: Colors.textMuted,
   },
 });
