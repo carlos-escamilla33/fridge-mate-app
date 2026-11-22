@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Colors from "../../constants/colors";
@@ -56,9 +56,9 @@ export default function AddItemScreen() {
         setScanError("Camera access is needed to scan. You can turn it on in Settings.");
         return;
       }
-      result = await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+      result = await ImagePicker.launchCameraAsync({ mediaTypes: ["images"] });
     } else {
-      result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+      result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"] });
     }
 
     if (result.canceled) return;
@@ -69,11 +69,10 @@ export default function AddItemScreen() {
       const resize = photo.width >= photo.height ? { width: MAX_IMAGE_SIDE } : { height: MAX_IMAGE_SIDE };
       const needsResize = Math.max(photo.width, photo.height) > MAX_IMAGE_SIDE;
 
-      const resized = await ImageManipulator.manipulateAsync(
-        photo.uri,
-        needsResize ? [{ resize }] : [],
-        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG, base64: true }
-      );
+      const context = ImageManipulator.manipulate(photo.uri);
+      if (needsResize) context.resize(resize);
+      const image = await context.renderAsync();
+      const resized = await image.saveAsync({ compress: 0.7, format: SaveFormat.JPEG, base64: true });
 
       const items = await scanFoodPhoto(token, resized.base64);
 
