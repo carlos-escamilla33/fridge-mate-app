@@ -19,7 +19,7 @@ const AVATAR_COLORS = [
 ];
 
 export default function ProfilesScreen() {
-  const { members, fetchMembers, isLoading } = useAccount();
+  const { members, fetchMembers, isLoading, selectMember } = useAccount();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
 
@@ -55,7 +55,10 @@ export default function ProfilesScreen() {
     return (
       <TouchableOpacity
         style={styles.profileCard}
-        onPress={() => router.replace("/(app)/home")}
+        onPress={() => {
+          selectMember(item);
+          router.replace("/(app)/home");
+        }}
         activeOpacity={0.7}
       >
         <View style={[styles.avatar, { backgroundColor: color + '1A' }]}>

@@ -15,12 +15,20 @@ function toMember(profile) {
 
 export function AccountProvider({ children }) {
   const [members, setMembers] = useState([]);
+  const [activeMember, setActiveMember] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useAuth();
 
   useEffect(() => {
-    if (!token) setMembers([]);
+    if (!token) {
+      setMembers([]);
+      setActiveMember(null);
+    }
   }, [token]);
+
+  function selectMember(member) {
+    setActiveMember(member);
+  }
 
   async function fetchMembers() {
     setIsLoading(true);
@@ -50,7 +58,7 @@ export function AccountProvider({ children }) {
   }
 
   return (
-    <AccountContext.Provider value={{ members, isLoading, fetchMembers, addMember, removeMember }}>
+    <AccountContext.Provider value={{ members, activeMember, isLoading, fetchMembers, addMember, removeMember, selectMember }}>
       {children}
     </AccountContext.Provider>
   );
