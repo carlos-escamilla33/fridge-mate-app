@@ -12,13 +12,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
-import { fetchItems } from "../../api/items";
+import { fetchItems, itemImageSource } from "../../api/items";
 import { parseDateOnly } from "../../utils/dates";
 import FoodItem from "../../components/FoodItem";
 import Colors from "../../constants/colors";
 
 // Backend item rows use item_id / food_name / expiration_date; FoodItem expects id / name / expiryDate.
-function toFoodItem(row, members) {
+function toFoodItem(row, members, token) {
   const member = members.find((m) => m.id === row.profile_id);
   return {
     id: String(row.item_id),
@@ -27,6 +27,7 @@ function toFoodItem(row, members) {
     quantity: row.ripeness_level && row.ripeness_level !== "n/a" ? row.ripeness_level : null,
     addedBy: member?.name,
     profileId: row.profile_id,
+    image: row.has_image ? itemImageSource(token, row.item_id) : null,
   };
 }
 
@@ -62,7 +63,7 @@ export default function HomeScreen() {
   async function loadItems() {
     try {
       const rows = await fetchItems(token);
-      setItems(rows.map((row) => toFoodItem(row, members)));
+      setItems(rows.map((row) => toFoodItem(row, members, token)));
       setLoadError("");
     } catch (err) {
       setLoadError(err.message ?? "Couldn't load your fridge.");

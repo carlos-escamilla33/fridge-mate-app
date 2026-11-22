@@ -18,6 +18,14 @@ export async function fetchItems(token) {
   return data.items;
 }
 
+// Image source for an item's photo. The endpoint requires auth, so the token goes in a header.
+export function itemImageSource(token, itemId) {
+  return {
+    uri: `${process.env.EXPO_PUBLIC_API_URL}/api/items/${itemId}/image`,
+    headers: { Authorization: `Bearer ${token}` },
+  };
+}
+
 export async function fetchItem(token, itemId) {
   const data = await callApi({ url: `/api/items/${itemId}`, method: "GET", token });
   return data.item;

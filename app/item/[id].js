@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
@@ -15,7 +16,7 @@ import Button from "../../components/Button";
 import Colors from "../../constants/colors";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
-import { fetchItem, deleteItem } from "../../api/items";
+import { fetchItem, deleteItem, itemImageSource } from "../../api/items";
 import { parseDateOnly } from "../../utils/dates";
 
 function getDaysUntilExpiry(expiryDate) {
@@ -136,9 +137,13 @@ export default function ItemDetailScreen() {
       ) : (
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <View style={styles.hero}>
-            <View style={styles.heroIcon}>
-              <Text style={styles.heroIconText}>{item.food_name[0].toUpperCase()}</Text>
-            </View>
+            {item.has_image ? (
+              <Image source={itemImageSource(token, item.item_id)} style={styles.photo} />
+            ) : (
+              <View style={styles.heroIcon}>
+                <Text style={styles.heroIconText}>{item.food_name[0].toUpperCase()}</Text>
+              </View>
+            )}
             <Text style={styles.name}>{item.food_name}</Text>
           </View>
 
@@ -206,6 +211,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 20,
     gap: 12,
+  },
+  photo: {
+    width: "100%",
+    aspectRatio: 4 / 3,
+    borderRadius: 16,
+    backgroundColor: Colors.borderLight,
   },
   heroIcon: {
     width: 72,
