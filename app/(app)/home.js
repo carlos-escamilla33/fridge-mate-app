@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,55 +6,28 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
+import { useFocusEffect } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
+import { useAccount } from "../../context/AccountContext";
+import { fetchItems } from "../../api/items";
 import FoodItem from "../../components/FoodItem";
 import Colors from "../../constants/colors";
 
-const FILTERS = ["All", "Expiring Soon", "Dairy", "Produce", "Meat", "Other"];
-
-const MOCK_ITEMS = [
-  {
-    id: "1",
-    name: "Whole Milk",
-    quantity: "1 gal",
-    addedBy: "Ana",
-    category: "Dairy",
-    expiryDate: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    name: "Blueberries",
-    quantity: "1 pint",
-    addedBy: "Carlos",
-    category: "Produce",
-    expiryDate: new Date(Date.now() + 2 * 86400000).toISOString(),
-  },
-  {
-    id: "3",
-    name: "Broccoli",
-    quantity: "1 head",
-    addedBy: "Carlos",
-    category: "Produce",
-    expiryDate: new Date(Date.now() + 6 * 86400000).toISOString(),
-  },
-  {
-    id: "4",
-    name: "Sharp Cheddar",
-    quantity: "8 oz",
-    addedBy: "Ana",
-    category: "Dairy",
-    expiryDate: new Date(Date.now() + 12 * 86400000).toISOString(),
-  },
-  {
-    id: "5",
-    name: "Chicken Breast",
-    quantity: "2 lbs",
-    addedBy: "Carlos",
-    category: "Meat",
-    expiryDate: new Date(Date.now() + 1 * 86400000).toISOString(),
-  },
-];
+// Backend item rows use item_id / food_name / expiration_date; FoodItem expects id / name / expiryDate.
+function toFoodItem(row, members) {
+  const member = members.find((m) => m.id === row.profile_id);
+  return {
+    id: String(row.item_id),
+    name: row.food_name,
+    expiryDate: row.expiration_date,
+    quantity: row.ripeness_level && row.ripeness_level !== "n/a" ? row.ripeness_level : null,
+    addedBy: member?.name,
+    profileId: row.profile_id,
+  };
+}
 
 function getDaysUntilExpiry(expiryDate) {
   const today = new Date();
@@ -75,17 +48,49 @@ function getInitials(name) {
 }
 
 export default function HomeScreen() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const { members, activeMember } = useAccount();
   const [activeFilter, setActiveFilter] = useState("All");
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadError, setLoadError] = useState("");
 
-  const expiringCount = MOCK_ITEMS.filter(
+  const filters = ["All", "Expiring Soon", ...members.map((m) => m.name)];
+
+  async function loadItems() {
+    try {
+      const rows = await fetchItems(token);
+      setItems(rows.map((row) => toFoodItem(row, members)));
+      setLoadError("");
+    } catch (err) {
+      setLoadError(err.message ?? "Couldn't load your fridge.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }
+
+  // Reload every time the tab comes into view, e.g. after adding or scanning items.
+  useFocusEffect(
+    useCallback(() => {
+      loadItems();
+    }, [token, members])
+  );
+
+  function handleRefresh() {
+    setRefreshing(true);
+    loadItems();
+  }
+
+  const expiringCount = items.filter(
     (i) => getDaysUntilExpiry(i.expiryDate) <= 3
   ).length;
 
-  const filteredItems = MOCK_ITEMS.filter((item) => {
+  const filteredItems = items.filter((item) => {
     if (activeFilter === "All") return true;
     if (activeFilter === "Expiring Soon") return getDaysUntilExpiry(item.expiryDate) <= 3;
-    return item.category === activeFilter;
+    return item.addedBy === activeFilter;
   });
 
   const expiringItems = filteredItems.filter((i) => getDaysUntilExpiry(i.expiryDate) <= 3);
@@ -106,7 +111,7 @@ export default function HomeScreen() {
             <Text style={styles.date}>{today}</Text>
           </View>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{getInitials(user?.name)}</Text>
+            <Text style={styles.avatarText}>{getInitials(activeMember?.name ?? user?.name)}</Text>
           </View>
         </View>
 
@@ -116,7 +121,7 @@ export default function HomeScreen() {
           style={styles.filterScrollView}
           contentContainerStyle={styles.filterScroll}
         >
-          {FILTERS.map((f) => (
+          {filters.map((f) => (
             <TouchableOpacity
               key={f}
               style={[styles.filterTab, activeFilter === f && styles.filterTabActive]}
@@ -134,7 +139,22 @@ export default function HomeScreen() {
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={Colors.accent} />
+          }
         >
+          {loading && (
+            <View style={styles.empty}>
+              <ActivityIndicator size="small" color={Colors.accent} />
+            </View>
+          )}
+
+          {loadError ? (
+            <View style={styles.errorBanner}>
+              <Text style={styles.errorText}>{loadError} Pull down to try again.</Text>
+            </View>
+          ) : null}
+
           {expiringCount > 0 && (
             <View style={styles.expiryBanner}>
               <View style={styles.expiryBannerDot} />
@@ -169,7 +189,7 @@ export default function HomeScreen() {
             </View>
           )}
 
-          {filteredItems.length === 0 && (
+          {!loading && !loadError && filteredItems.length === 0 && (
             <View style={styles.empty}>
               <View style={styles.emptyIcon}>
                 <Text style={styles.emptyIconText}>?</Text>
@@ -287,6 +307,15 @@ const styles = StyleSheet.create({
     color: Colors.warnText,
     flex: 1,
     lineHeight: 19,
+  },
+  errorBanner: {
+    backgroundColor: Colors.dangerBg,
+    borderRadius: 12,
+    padding: 12,
+  },
+  errorText: {
+    fontSize: 13,
+    color: Colors.dangerText,
   },
   expiryBannerBold: {
     fontWeight: "600",

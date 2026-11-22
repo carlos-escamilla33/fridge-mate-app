@@ -12,6 +12,12 @@ export async function scanFoodPhoto(token, imageBase64) {
   return data.items;
 }
 
+// Every item in the account (all profiles), soonest expiration first.
+export async function fetchItems(token) {
+  const data = await callApi({ url: "/api/items", method: "GET", token });
+  return data.items;
+}
+
 // items: [{ foodName, expirationDate: "YYYY-MM-DD", ripenessLevel, quantity }]
 export async function createItemsBulk(token, profileId, items) {
   return callApi({
