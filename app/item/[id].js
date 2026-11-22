@@ -157,6 +157,7 @@ export default function ItemDetailScreen() {
           </View>
 
           <View style={styles.card}>
+            <DetailRow icon="hash" label="Quantity" value={String(item.quantity ?? 1)} />
             <DetailRow icon="calendar" label="Expires" value={formatDate(parseDateOnly(item.expiration_date))} />
             <DetailRow icon="droplet" label="Ripeness" value={item.ripeness_level || "n/a"} />
             <DetailRow icon="user" label="Added by" value={addedBy} />

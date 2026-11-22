@@ -25,7 +25,11 @@ function toFoodItem(row, members, token) {
     id: String(row.item_id),
     name: row.food_name,
     expiryDate: parseDateOnly(row.expiration_date),
-    quantity: row.ripeness_level && row.ripeness_level !== "n/a" ? row.ripeness_level : null,
+    // Shown after "Added by" on the card, e.g. "12 · fresh".
+    quantity: [
+      row.quantity > 1 ? String(row.quantity) : null,
+      row.ripeness_level && row.ripeness_level !== "n/a" ? row.ripeness_level : null,
+    ].filter(Boolean).join(" · ") || null,
     addedBy: member?.name,
     profileId: row.profile_id,
     image: row.has_image ? itemImageSource(token, row.item_id) : null,
