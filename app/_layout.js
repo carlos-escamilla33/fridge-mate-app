@@ -17,6 +17,7 @@ function AuthGate() {
       <Stack.Screen name="index" />
       <Stack.Screen name="profiles" />
       <Stack.Screen name="create-profile" />
+      <Stack.Screen name="scan-review" />
     </Stack>
   );
 }
