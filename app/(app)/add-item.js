@@ -123,7 +123,7 @@ export default function AddItemScreen() {
         },
       ]);
       setSuccess(true);
-      setTimeout(() => router.replace("/(app)/home"), 800);
+      setTimeout(() => router.replace("/(app)/home"), 1500);
     } catch (err) {
       setErrors({ name: err.message ?? "Could not add item. Try again." });
     } finally {
@@ -228,7 +228,7 @@ export default function AddItemScreen() {
 
             {success ? (
               <View style={styles.successBanner}>
-                <Feather name="check-circle" size={18} color={Colors.successText} />
+                <Pug variant="fawn" happy size={44} />
                 <Text style={styles.successText}>Item added to your fridge!</Text>
               </View>
             ) : (
@@ -348,10 +348,10 @@ const styles = StyleSheet.create({
   successBanner: {
     backgroundColor: Colors.successBg,
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 12,
     marginTop: 8,
   },
   successText: {
