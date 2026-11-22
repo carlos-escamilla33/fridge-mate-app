@@ -39,7 +39,7 @@ export default function AddItemScreen() {
   const { activeMember } = useAccount();
 
   function handleScanPress() {
-    Alert.alert("Scan food", "Take a photo of your groceries or the inside of your fridge.", [
+    Alert.alert("Scan an item", "Fill the photo with the item you want to add.", [
       { text: "Take Photo", onPress: () => pickAndScan("camera") },
       { text: "Choose from Library", onPress: () => pickAndScan("library") },
       { text: "Cancel", style: "cancel" },
@@ -164,9 +164,9 @@ export default function AddItemScreen() {
                 <Feather name="camera" size={26} color={Colors.textSecondary} />
               )}
             </View>
-            <Text style={styles.scanTitle}>{scanning ? "Identifying food..." : "Scan your groceries"}</Text>
+            <Text style={styles.scanTitle}>{scanning ? "Identifying food..." : "Scan an item"}</Text>
             <Text style={styles.scanSubtitle}>
-              {scanning ? "This takes a few seconds" : "AI will identify items and estimate expiry"}
+              {scanning ? "This takes a few seconds" : "AI will identify it and estimate expiry"}
             </Text>
           </TouchableOpacity>
 
