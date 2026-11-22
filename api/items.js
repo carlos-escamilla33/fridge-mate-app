@@ -18,6 +18,15 @@ export async function fetchItems(token) {
   return data.items;
 }
 
+export async function fetchItem(token, itemId) {
+  const data = await callApi({ url: `/api/items/${itemId}`, method: "GET", token });
+  return data.item;
+}
+
+export async function deleteItem(token, itemId) {
+  return callApi({ url: `/api/items/${itemId}`, method: "DELETE", token });
+}
+
 // items: [{ foodName, expirationDate: "YYYY-MM-DD", ripenessLevel, quantity }]
 export async function createItemsBulk(token, profileId, items) {
   return callApi({
