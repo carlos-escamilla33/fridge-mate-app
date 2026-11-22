@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack, router } from "expo-router";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { AccountProvider } from "../context/AccountContext";
@@ -32,10 +33,12 @@ function AuthGate() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <AccountProvider>
-        <AuthGate />
-      </AccountProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <AccountProvider>
+          <AuthGate />
+        </AccountProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
