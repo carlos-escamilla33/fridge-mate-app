@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
@@ -18,10 +19,11 @@ import { useAuth } from "../context/AuthContext";
 import { useAccount } from "../context/AccountContext";
 import { createItemsBulk } from "../api/items";
 import { isoToDisplay, displayToIso } from "../utils/dates";
+import { takePendingPhoto } from "../utils/scanPhoto";
 
 let nextRowId = 1;
 
-function toRow(item) {
+function toRow(item, fromScan) {
   return {
     rowId: nextRowId++,
     name: item.foodName ?? "",
@@ -29,6 +31,7 @@ function toRow(item) {
     quantity: Math.max(1, item.quantity ?? 1),
     ripeness: item.ripenessLevel || "fresh",
     lowConfidence: item.confidence === "low",
+    fromScan,
   };
 }
 
@@ -36,7 +39,8 @@ export default function ScanReviewScreen() {
   const params = useLocalSearchParams();
   const { token } = useAuth();
   const { activeMember } = useAccount();
-  const [rows, setRows] = useState(() => JSON.parse(params.items ?? "[]").map(toRow));
+  const [rows, setRows] = useState(() => JSON.parse(params.items ?? "[]").map((item) => toRow(item, true)));
+  const [photo] = useState(() => takePendingPhoto());
   const [errors, setErrors] = useState({});
   const [saveError, setSaveError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -53,7 +57,7 @@ export default function ScanReviewScreen() {
   }
 
   function addBlankRow() {
-    setRows((prev) => [...prev, toRow({})]);
+    setRows((prev) => [...prev, toRow({}, false)]);
   }
 
   function validate() {
@@ -83,6 +87,8 @@ export default function ScanReviewScreen() {
         expirationDate: displayToIso(row.expiry),
         ripenessLevel: row.ripeness.slice(0, 30),
         quantity: row.quantity,
+        // Only the scanned item gets the photo, not rows added by hand.
+        ...(row.fromScan && photo ? { image: photo.base64 } : {}),
       }));
       await createItemsBulk(token, activeMember.id, items);
       router.replace("/(app)/home");
@@ -114,6 +120,8 @@ export default function ScanReviewScreen() {
             <Text style={styles.title}>Review Items</Text>
             <View style={{ width: 20 }} />
           </View>
+
+          {photo ? <Image source={{ uri: photo.uri }} style={styles.photo} /> : null}
 
           <Text style={styles.subtitle}>
             Check what we found. Fix anything that's off, then add them to your fridge.
@@ -226,6 +234,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: Colors.textPrimary,
     letterSpacing: -0.2,
+  },
+  photo: {
+    width: "100%",
+    aspectRatio: 4 / 3,
+    borderRadius: 16,
+    backgroundColor: Colors.borderLight,
+    marginBottom: 16,
   },
   subtitle: {
     fontSize: 14,

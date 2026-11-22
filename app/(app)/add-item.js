@@ -22,9 +22,12 @@ import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
 import { scanFoodPhoto, createItemsBulk } from "../../api/items";
 import { displayToIso } from "../../utils/dates";
+import { setPendingPhoto } from "../../utils/scanPhoto";
 
 // Claude doesn't benefit from images larger than this, and smaller uploads are faster.
 const MAX_IMAGE_SIDE = 1568;
+// Size of the photo saved with the item (about 30-50KB).
+const THUMBNAIL_SIDE = 512;
 
 export default function AddItemScreen() {
   const [name, setName] = useState("");
@@ -80,6 +83,13 @@ export default function AddItemScreen() {
         setScanError("No food found in that photo. Try getting closer or better lighting.");
         return;
       }
+
+      // Smaller copy of the photo to keep with the item.
+      const thumbContext = ImageManipulator.manipulate(resized.uri);
+      thumbContext.resize(photo.width >= photo.height ? { width: THUMBNAIL_SIDE } : { height: THUMBNAIL_SIDE });
+      const thumbImage = await thumbContext.renderAsync();
+      const thumbnail = await thumbImage.saveAsync({ compress: 0.6, format: SaveFormat.JPEG, base64: true });
+      setPendingPhoto({ uri: thumbnail.uri, base64: thumbnail.base64 });
 
       router.push({ pathname: "/scan-review", params: { items: JSON.stringify(items) } });
     } catch (err) {
