@@ -1,34 +1,43 @@
+// Warm, calm pug palette: cream backgrounds, fawn/caramel accent, cocoa text,
+// sage for success, honey for warnings, soft terracotta for errors.
+// Text colors are checked for contrast against their backgrounds (4.5:1 or better,
+// except textMuted, which is for hints and inactive icons).
 const Colors = {
-  bg: '#F9FAFB',
+  bg: '#FBF7F1',
   surface: '#FFFFFF',
   card: '#FFFFFF',
 
-  accent: '#10B981',
-  accentLight: '#ECFDF5',
-  accentMid: '#D1FAE5',
-  accentText: '#059669',
+  accent: '#9A5F33',
+  accentLight: '#F5E8D8',
+  accentMid: '#EBD3B6',
+  accentText: '#85512A',
 
-  textPrimary: '#111827',
-  textSecondary: '#6B7280',
-  textMuted: '#9CA3AF',
+  textPrimary: '#3B2A22',
+  textSecondary: '#7A6253',
+  textMuted: '#968171',
 
-  border: '#E5E7EB',
-  borderLight: '#F3F4F6',
+  border: '#EADFD3',
+  borderLight: '#F4EDE4',
 
-  danger: '#EF4444',
-  dangerBg: '#FEF2F2',
-  dangerText: '#DC2626',
+  danger: '#C2574B',
+  dangerBg: '#FBECE9',
+  dangerBorder: '#F0C9C2',
+  dangerText: '#A3443A',
 
-  warn: '#F59E0B',
-  warnBg: '#FFFBEB',
-  warnText: '#D97706',
+  warn: '#D9A441',
+  warnBg: '#FCF3E0',
+  warnBorder: '#F1DDAE',
+  warnText: '#8A5F0E',
 
-  success: '#10B981',
-  successBg: '#ECFDF5',
-  successText: '#059669',
+  success: '#6F8F5E',
+  successBg: '#EEF3E8',
+  successText: '#4F6B41',
 
   white: '#FFFFFF',
   transparent: 'transparent',
+
+  // Household member avatars, in the same warm family.
+  avatars: ['#9A5F33', '#6F8F5E', '#C98A3D', '#B5655A', '#7D6A8C'],
 };
 
 export default Colors;
