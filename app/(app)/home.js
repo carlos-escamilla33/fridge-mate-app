@@ -12,9 +12,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
-import { fetchItems, itemImageSource } from "../../api/items";
+import { fetchItems, itemImageSource, deleteItem } from "../../api/items";
 import { parseDateOnly } from "../../utils/dates";
 import FoodItem from "../../components/FoodItem";
+import SwipeToDelete from "../../components/SwipeToDelete";
 import Pug from "../../components/Pug";
 import Colors from "../../constants/colors";
 
@@ -84,6 +85,17 @@ export default function HomeScreen() {
       loadItems();
     }, [token, members])
   );
+
+  async function handleDelete(item) {
+    // Remove right away; reload if the delete fails so the list stays accurate.
+    setItems((prev) => prev.filter((i) => i.id !== item.id));
+    try {
+      await deleteItem(token, item.id);
+    } catch (err) {
+      setLoadError(err.message ?? "Couldn't delete that item.");
+      loadItems();
+    }
+  }
 
   function handleRefresh() {
     setRefreshing(true);
@@ -179,7 +191,9 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>Expiring Soon</Text>
               <View style={styles.itemList}>
                 {expiringItems.map((item) => (
-                  <FoodItem key={item.id} item={item} onPress={() => router.push(`/item/${item.id}`)} />
+                  <SwipeToDelete key={item.id} onDelete={() => handleDelete(item)}>
+                    <FoodItem item={item} onPress={() => router.push(`/item/${item.id}`)} />
+                  </SwipeToDelete>
                 ))}
               </View>
             </View>
@@ -190,7 +204,9 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>Fresh</Text>
               <View style={styles.itemList}>
                 {freshItems.map((item) => (
-                  <FoodItem key={item.id} item={item} onPress={() => router.push(`/item/${item.id}`)} />
+                  <SwipeToDelete key={item.id} onDelete={() => handleDelete(item)}>
+                    <FoodItem item={item} onPress={() => router.push(`/item/${item.id}`)} />
+                  </SwipeToDelete>
                 ))}
               </View>
             </View>
