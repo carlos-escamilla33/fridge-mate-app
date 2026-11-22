@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Animated } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../context/AuthContext";
 import Colors from "../constants/colors";
+import Logo from "../components/Logo";
 
 export default function SplashScreen() {
   const { isLoading, user } = useAuth();
@@ -41,9 +42,7 @@ export default function SplashScreen() {
       <Animated.View
         style={[styles.content, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}
       >
-        <View style={styles.logoWrap}>
-          <Text style={styles.logoText}>FM</Text>
-        </View>
+        <Logo size={96} style={styles.logo} />
         <Text style={styles.title}>FridgeMate</Text>
         <Text style={styles.tagline}>Nothing goes to waste.</Text>
         <View style={styles.loaderTrack}>
@@ -66,20 +65,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
-  logoWrap: {
-    width: 72,
-    height: 72,
-    backgroundColor: Colors.accent,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
+  logo: {
     marginBottom: 16,
-  },
-  logoText: {
-    fontSize: 26,
-    fontWeight: "800",
-    color: Colors.white,
-    letterSpacing: -0.5,
   },
   title: {
     fontSize: 32,
