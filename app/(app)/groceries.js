@@ -17,7 +17,7 @@ import { useFocusEffect } from "expo-router";
 import Colors from "../../constants/colors";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
-import { fetchItems } from "../../api/items";
+import { fetchItems, dismissGrocerySuggestion } from "../../api/items";
 import {
   fetchGroceries,
   addGrocery,
@@ -43,14 +43,14 @@ function expiryLabel(days) {
 }
 
 // One suggestion per food name for items expiring soon, skipping anything already on the list.
-function buildSuggestions(items, groceries, dismissedNames) {
+function buildSuggestions(items, groceries) {
   const onList = new Set(groceries.map((g) => g.name.trim().toLowerCase()));
   const byName = new Map();
 
   items.forEach((item) => {
     const key = item.food_name.trim().toLowerCase();
     const days = getDaysUntilExpiry(item.expiration_date);
-    if (days > SUGGEST_WITHIN_DAYS || onList.has(key) || dismissedNames.has(key)) return;
+    if (item.grocery_dismissed || days > SUGGEST_WITHIN_DAYS || onList.has(key)) return;
     const existing = byName.get(key);
     if (!existing || days < existing.days) {
       byName.set(key, { key, name: item.food_name, itemId: item.item_id, days });
@@ -65,7 +65,6 @@ export default function GroceriesScreen() {
   const { activeMember } = useAccount();
   const [items, setItems] = useState([]);
   const [groceries, setGroceries] = useState([]);
-  const [dismissedNames, setDismissedNames] = useState(new Set());
   const [newName, setNewName] = useState("");
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -118,8 +117,16 @@ export default function GroceriesScreen() {
     await handleAdd(name);
   }
 
-  function handleDismiss(key) {
-    setDismissedNames((prev) => new Set(prev).add(key));
+  async function handleDismiss(suggestion) {
+    const isMatch = (item) => item.food_name.trim().toLowerCase() === suggestion.key;
+    // Hide it right away; bring it back if the request fails.
+    setItems((prev) => prev.map((item) => (isMatch(item) ? { ...item, grocery_dismissed: true } : item)));
+    try {
+      await dismissGrocerySuggestion(token, suggestion.name);
+    } catch (err) {
+      setItems((prev) => prev.map((item) => (isMatch(item) ? { ...item, grocery_dismissed: false } : item)));
+      setError(err.message ?? "Couldn't dismiss that suggestion.");
+    }
   }
 
   async function handleToggle(grocery) {
@@ -154,7 +161,7 @@ export default function GroceriesScreen() {
     }
   }
 
-  const suggestions = buildSuggestions(items, groceries, dismissedNames);
+  const suggestions = buildSuggestions(items, groceries);
   const toBuy = groceries.filter((g) => !g.checked);
   const checked = groceries.filter((g) => g.checked);
 
@@ -225,7 +232,7 @@ export default function GroceriesScreen() {
                           </Text>
                         </View>
                         <TouchableOpacity
-                          onPress={() => handleDismiss(s.key)}
+                          onPress={() => handleDismiss(s)}
                           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                           style={styles.dismissBtn}
                         >

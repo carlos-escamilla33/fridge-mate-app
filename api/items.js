@@ -31,6 +31,16 @@ export async function fetchItem(token, itemId) {
   return data.item;
 }
 
+// Stops suggesting this food for the grocery list (for the items currently in the fridge).
+export async function dismissGrocerySuggestion(token, foodName) {
+  return callApi({
+    url: "/api/items/dismiss-suggestion",
+    method: "POST",
+    token,
+    body: { foodName },
+  });
+}
+
 export async function deleteItem(token, itemId) {
   return callApi({ url: `/api/items/${itemId}`, method: "DELETE", token });
 }
