@@ -4,6 +4,15 @@ import { useAuth } from "./AuthContext";
 
 const AccountContext = createContext(null);
 
+// Backend profile rows use profile_id / first_name; the UI expects id / name.
+function toMember(profile) {
+  return {
+    id: profile.profile_id,
+    name: profile.first_name,
+    notificationsEnabled: profile.notifications_enabled,
+  };
+}
+
 export function AccountProvider({ children }) {
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +25,8 @@ export function AccountProvider({ children }) {
   async function fetchMembers() {
     setIsLoading(true);
     try {
-      const data = await callApi({ url: "/api/account/members", method: "GET", token });
-      setMembers(data.members);
+      const data = await callApi({ url: "/api/profiles", method: "GET", token });
+      setMembers((data.profiles ?? []).map(toMember));
     } catch (err) {
       console.log(err);
     } finally {
@@ -30,13 +39,13 @@ export function AccountProvider({ children }) {
       url: "/api/accounts/register-profile",
       method: "POST",
       token,
-      body: {name, last_name: "escamilla"},
+      body: { first_name: name },
     });
-    setMembers((prev) => [...prev, data.member]);
+    setMembers((prev) => [...prev, toMember(data.profile)]);
   }
 
   async function removeMember(memberId) {
-    await callApi({ url: `/api/account/members/${memberId}`, method: "DELETE", token });
+    await callApi({ url: `/api/profiles/${memberId}`, method: "DELETE", token });
     setMembers((prev) => prev.filter((m) => m.id !== memberId));
   }
 

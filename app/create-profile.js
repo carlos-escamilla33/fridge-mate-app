@@ -34,7 +34,7 @@ export default function CreateProfileScreen() {
     }
     setLoading(true);
     try {
-      await addMember(name.trim(), selectedColor);
+      await addMember(name.trim());
       router.back();
     } catch (err) {
       setError(err.message ?? "Could not add member. Try again.");
