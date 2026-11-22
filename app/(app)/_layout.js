@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs } from "expo-router/js-tabs";
 import { View, Text, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import Colors from "../../constants/colors";
