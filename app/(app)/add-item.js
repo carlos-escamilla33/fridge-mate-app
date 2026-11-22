@@ -119,7 +119,7 @@ export default function AddItemScreen() {
           foodName: name.trim(),
           expirationDate: displayToIso(expiryDate),
           ripenessLevel: "fresh",
-          quantity: Math.min(20, Math.max(1, parseInt(quantity, 10) || 1)),
+          quantity: Math.min(99, Math.max(1, parseInt(quantity, 10) || 1)),
         },
       ]);
       setSuccess(true);

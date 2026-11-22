@@ -47,7 +47,8 @@ export default function ScanReviewScreen() {
   const [saving, setSaving] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
 
-  const totalCount = rows.reduce((sum, row) => sum + row.quantity, 0);
+  // Number of entries being added (a bag of 12 rolls is one entry with quantity 12).
+  const totalCount = rows.length;
 
   function updateRow(rowId, changes) {
     setRows((prev) => prev.map((row) => (row.rowId === rowId ? { ...row, ...changes } : row)));
@@ -181,7 +182,7 @@ export default function ScanReviewScreen() {
                     <Text style={styles.stepperValue}>{row.quantity}</Text>
                     <TouchableOpacity
                       style={styles.stepperBtn}
-                      onPress={() => updateRow(row.rowId, { quantity: Math.min(20, row.quantity + 1) })}
+                      onPress={() => updateRow(row.rowId, { quantity: Math.min(99, row.quantity + 1) })}
                     >
                       <Feather name="plus" size={16} color={Colors.textSecondary} />
                     </TouchableOpacity>
