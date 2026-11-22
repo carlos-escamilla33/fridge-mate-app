@@ -13,7 +13,14 @@ function AuthGate() {
   }, [user, isLoading]);
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        // iOS 26 turns on swipe-back from anywhere on the screen, so pressing and dragging
+        // content navigated back. Keep only the standard swipe from the left edge.
+        fullScreenGestureEnabled: false,
+      }}
+    >
       <Stack.Screen name="index" />
       <Stack.Screen name="profiles" />
       <Stack.Screen name="create-profile" />
