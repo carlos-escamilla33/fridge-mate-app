@@ -12,7 +12,7 @@ const TABS = {
   profile: { label: 'Profile', icon: 'user' },
 };
 
-export default function TabBar({ state, navigation }) {
+export default function TabBar({ state, emitter, navigateToTab }) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -25,9 +25,9 @@ export default function TabBar({ state, navigation }) {
         const color = focused ? Colors.accent : Colors.textMuted;
 
         function handlePress() {
-          const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+          const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
           if (!focused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            navigateToTab(route.key);
           }
         }
 
