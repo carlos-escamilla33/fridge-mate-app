@@ -13,6 +13,7 @@ import {
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import Colors from "../../constants/colors";
+import Pug from "../../components/Pug";
 
 export default function SignInScreen() {
   const { signIn } = useAuth();
@@ -56,8 +57,12 @@ export default function SignInScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <View style={styles.logoWrap}>
-            <Text style={styles.logoText}>FM</Text>
+          <View style={styles.logoRow}>
+            <Pug variant="fawn" size={64} />
+            <View style={styles.logoWrap}>
+              <Text style={styles.logoText}>FM</Text>
+            </View>
+            <Pug variant="brindle" size={64} />
           </View>
           <Text style={styles.title}>Welcome back.</Text>
           <Text style={styles.subtitle}>Sign in to your household fridge.</Text>
@@ -132,6 +137,11 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
+  },
+  logoRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 12,
     marginBottom: 20,
   },
   logoText: {
