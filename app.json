@@ -30,7 +30,14 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "FridgeMate uses the camera to scan food items into your fridge.",
+          "photosPermission": "FridgeMate uses your photos to scan food items into your fridge."
+        }
+      ]
     ]
   }
 }
