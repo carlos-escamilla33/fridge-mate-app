@@ -19,9 +19,9 @@ import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Colors from "../../constants/colors";
 import { useAuth } from "../../context/AuthContext";
-import { scanFoodPhoto } from "../../api/items";
-
-const CATEGORIES = ["Produce", "Dairy", "Meat", "Seafood", "Grains", "Drinks", "Snacks", "Other"];
+import { useAccount } from "../../context/AccountContext";
+import { scanFoodPhoto, createItemsBulk } from "../../api/items";
+import { displayToIso } from "../../utils/dates";
 
 // Claude doesn't benefit from images larger than this, and smaller uploads are faster.
 const MAX_IMAGE_SIDE = 1568;
@@ -29,7 +29,6 @@ const MAX_IMAGE_SIDE = 1568;
 export default function AddItemScreen() {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [category, setCategory] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -37,6 +36,7 @@ export default function AddItemScreen() {
   const [scanning, setScanning] = useState(false);
   const [scanError, setScanError] = useState("");
   const { token } = useAuth();
+  const { activeMember } = useAccount();
 
   function handleScanPress() {
     Alert.alert("Scan food", "Take a photo of your groceries or the inside of your fridge.", [
@@ -92,12 +92,11 @@ export default function AddItemScreen() {
 
   function validate() {
     const e = {};
-    if (!name.trim()) e.name = "Item name is required.";
+    if (name.trim().length < 2) e.name = "Item name is required.";
     if (!expiryDate.trim()) e.expiryDate = "Expiration date is required.";
-    else {
-      const parsed = new Date(expiryDate);
-      if (isNaN(parsed.getTime())) e.expiryDate = "Enter a valid date (MM/DD/YYYY).";
-    }
+    else if (!displayToIso(expiryDate)) e.expiryDate = "Enter a valid date (MM/DD/YYYY).";
+    if (quantity && !/^\d+$/.test(quantity.trim())) e.quantity = "Enter a whole number.";
+    if (!activeMember) e.name = "Pick a profile first.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -105,17 +104,27 @@ export default function AddItemScreen() {
   async function handleAdd() {
     if (!validate()) return;
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await createItemsBulk(token, activeMember.id, [
+        {
+          foodName: name.trim(),
+          expirationDate: displayToIso(expiryDate),
+          ripenessLevel: "fresh",
+          quantity: Math.min(20, Math.max(1, parseInt(quantity, 10) || 1)),
+        },
+      ]);
       setSuccess(true);
       setTimeout(() => router.replace("/(app)/home"), 800);
-    }, 600);
+    } catch (err) {
+      setErrors({ name: err.message ?? "Could not add item. Try again." });
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleAddAnother() {
     setName("");
     setQuantity("");
-    setCategory("");
     setExpiryDate("");
     setErrors({});
     setSuccess(false);
@@ -191,7 +200,9 @@ export default function AddItemScreen() {
                   label="Quantity"
                   value={quantity}
                   onChangeText={setQuantity}
-                  placeholder="e.g. 1 lb"
+                  placeholder="1"
+                  keyboardType="number-pad"
+                  error={errors.quantity}
                 />
               </View>
               <View style={styles.rowHalf}>
@@ -204,28 +215,6 @@ export default function AddItemScreen() {
                   error={errors.expiryDate}
                 />
               </View>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Category</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.categoryScroll}
-              >
-                {CATEGORIES.map((c) => (
-                  <TouchableOpacity
-                    key={c}
-                    style={[styles.categoryChip, category === c && styles.categoryChipActive]}
-                    onPress={() => setCategory(c)}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={[styles.categoryChipText, category === c && styles.categoryChipTextActive]}>
-                      {c}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
             </View>
 
             {success ? (
@@ -342,39 +331,6 @@ const styles = StyleSheet.create({
   },
   rowHalf: {
     flex: 1,
-  },
-  inputGroup: {
-    marginBottom: 16,
-  },
-  inputLabel: {
-    fontSize: 13,
-    fontWeight: "500",
-    color: Colors.textSecondary,
-    marginBottom: 10,
-  },
-  categoryScroll: {
-    gap: 8,
-  },
-  categoryChip: {
-    backgroundColor: Colors.white,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-  },
-  categoryChipActive: {
-    backgroundColor: Colors.accent,
-    borderColor: Colors.accent,
-  },
-  categoryChipText: {
-    fontSize: 13,
-    fontWeight: "500",
-    color: Colors.textSecondary,
-  },
-  categoryChipTextActive: {
-    color: Colors.white,
-    fontWeight: "600",
   },
   submitBtn: {
     marginTop: 8,
