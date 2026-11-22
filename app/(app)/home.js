@@ -13,6 +13,7 @@ import { router, useFocusEffect } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
 import { fetchItems } from "../../api/items";
+import { parseDateOnly } from "../../utils/dates";
 import FoodItem from "../../components/FoodItem";
 import Colors from "../../constants/colors";
 
@@ -22,7 +23,7 @@ function toFoodItem(row, members) {
   return {
     id: String(row.item_id),
     name: row.food_name,
-    expiryDate: row.expiration_date,
+    expiryDate: parseDateOnly(row.expiration_date),
     quantity: row.ripeness_level && row.ripeness_level !== "n/a" ? row.ripeness_level : null,
     addedBy: member?.name,
     profileId: row.profile_id,

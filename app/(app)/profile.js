@@ -13,6 +13,7 @@ import { router, useFocusEffect } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
 import { fetchItems } from "../../api/items";
+import { parseDateOnly } from "../../utils/dates";
 import Colors from "../../constants/colors";
 
 function SettingsRow({ icon, label, onPress, danger }) {
@@ -54,7 +55,9 @@ export default function ProfileScreen() {
 
   const myItemCount = items.filter((i) => i.profile_id === activeMember?.id).length;
   const expiringCount = items.filter((i) => {
-    const days = (new Date(i.expiration_date) - new Date()) / (1000 * 60 * 60 * 24);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const days = Math.round((parseDateOnly(i.expiration_date) - today) / (1000 * 60 * 60 * 24));
     return days <= 3;
   }).length;
 

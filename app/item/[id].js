@@ -16,6 +16,7 @@ import Colors from "../../constants/colors";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
 import { fetchItem, deleteItem } from "../../api/items";
+import { parseDateOnly } from "../../utils/dates";
 
 function getDaysUntilExpiry(expiryDate) {
   const today = new Date();
@@ -97,7 +98,7 @@ export default function ItemDetailScreen() {
     ]);
   }
 
-  const days = item ? getDaysUntilExpiry(item.expiration_date) : 0;
+  const days = item ? getDaysUntilExpiry(parseDateOnly(item.expiration_date)) : 0;
   const status = getExpiryStatus(days);
   const addedBy = members.find((m) => m.id === item?.profile_id)?.name ?? "Someone";
 
@@ -151,7 +152,7 @@ export default function ItemDetailScreen() {
           </View>
 
           <View style={styles.card}>
-            <DetailRow icon="calendar" label="Expires" value={formatDate(item.expiration_date)} />
+            <DetailRow icon="calendar" label="Expires" value={formatDate(parseDateOnly(item.expiration_date))} />
             <DetailRow icon="droplet" label="Ripeness" value={item.ripeness_level || "n/a"} />
             <DetailRow icon="user" label="Added by" value={addedBy} />
             <DetailRow icon="clock" label="Added on" value={formatDate(item.created_at)} />
