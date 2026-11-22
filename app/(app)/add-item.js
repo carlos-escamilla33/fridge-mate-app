@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
@@ -18,6 +17,7 @@ import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Colors from "../../constants/colors";
+import Pug from "../../components/Pug";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
 import { scanFoodPhoto, createItemsBulk } from "../../api/items";
@@ -169,12 +169,12 @@ export default function AddItemScreen() {
           >
             <View style={styles.scanIconWrap}>
               {scanning ? (
-                <ActivityIndicator size="small" color={Colors.accent} />
+                <Pug variant="fawn" size={48} />
               ) : (
                 <Feather name="camera" size={26} color={Colors.textSecondary} />
               )}
             </View>
-            <Text style={styles.scanTitle}>{scanning ? "Identifying food..." : "Scan an item"}</Text>
+            <Text style={styles.scanTitle}>{scanning ? "Sniffing it out..." : "Scan an item"}</Text>
             <Text style={styles.scanSubtitle}>
               {scanning ? "This takes a few seconds" : "AI will identify it and estimate expiry"}
             </Text>
