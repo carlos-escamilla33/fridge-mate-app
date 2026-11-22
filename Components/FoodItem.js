@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Colors from '../constants/colors';
 
 const CATEGORY_COLORS = {
@@ -43,9 +43,13 @@ export default function FoodItem({ item, onPress }) {
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
-      <View style={[styles.iconWrap, { backgroundColor: color + '18' }]}>
-        <Text style={[styles.iconText, { color }]}>{initial}</Text>
-      </View>
+      {item.image ? (
+        <Image source={item.image} style={styles.photo} />
+      ) : (
+        <View style={[styles.iconWrap, { backgroundColor: color + '18' }]}>
+          <Text style={[styles.iconText, { color }]}>{initial}</Text>
+        </View>
+      )}
       <View style={styles.info}>
         <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
         <Text style={styles.meta}>
@@ -76,6 +80,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
+  },
+  photo: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: Colors.borderLight,
     flexShrink: 0,
   },
   iconText: {
