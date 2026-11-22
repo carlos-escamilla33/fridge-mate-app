@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,7 +9,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
+import { router, useFocusEffect } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
+import { useAccount } from "../../context/AccountContext";
+import { fetchItems } from "../../api/items";
 import Colors from "../../constants/colors";
 
 function SettingsRow({ icon, label, onPress, danger }) {
@@ -36,7 +40,23 @@ function SettingsRow({ icon, label, onPress, danger }) {
 }
 
 export default function ProfileScreen() {
-  const { user, signOut } = useAuth();
+  const { user, token, signOut } = useAuth();
+  const { members, activeMember } = useAccount();
+  const [items, setItems] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchItems(token)
+        .then(setItems)
+        .catch(() => setItems([]));
+    }, [token])
+  );
+
+  const myItemCount = items.filter((i) => i.profile_id === activeMember?.id).length;
+  const expiringCount = items.filter((i) => {
+    const days = (new Date(i.expiration_date) - new Date()) / (1000 * 60 * 60 * 24);
+    return days <= 3;
+  }).length;
 
   function getInitials(name) {
     if (!name) return "Y";
@@ -61,9 +81,9 @@ export default function ProfileScreen() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.hero}>
             <View style={styles.bigAvatar}>
-              <Text style={styles.bigAvatarText}>{getInitials(user?.name)}</Text>
+              <Text style={styles.bigAvatarText}>{getInitials(activeMember?.name ?? user?.name)}</Text>
             </View>
-            <Text style={styles.heroName}>{user?.name ?? "Your Name"}</Text>
+            <Text style={styles.heroName}>{activeMember?.name ?? user?.name ?? ""}</Text>
             <Text style={styles.heroEmail}>{user?.email ?? ""}</Text>
             {user?.isAdmin && (
               <View style={styles.adminBadge}>
@@ -74,40 +94,30 @@ export default function ProfileScreen() {
 
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
-              <Text style={styles.statNum}>24</Text>
+              <Text style={styles.statNum}>{myItemCount}</Text>
               <Text style={styles.statDesc}>Items added</Text>
             </View>
             <View style={[styles.statItem, styles.statBorder]}>
-              <Text style={styles.statNum}>7</Text>
-              <Text style={styles.statDesc}>Saved from waste</Text>
+              <Text style={styles.statNum}>{expiringCount}</Text>
+              <Text style={styles.statDesc}>Expiring soon</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statNum}>2</Text>
+              <Text style={styles.statNum}>{members.length}</Text>
               <Text style={styles.statDesc}>Members</Text>
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Preferences</Text>
-            <View style={styles.settingsGroup}>
-              <SettingsRow icon="bell" label="Notifications" onPress={() => {}} />
-              <SettingsRow icon="clock" label="Expiry Reminders" onPress={() => {}} />
             </View>
           </View>
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Household</Text>
             <View style={styles.settingsGroup}>
-              <SettingsRow icon="users" label="Manage Members" onPress={() => {}} />
-              <SettingsRow icon="settings" label="Household Settings" onPress={() => {}} />
+              <SettingsRow icon="users" label="Switch Profile" onPress={() => router.replace("/profiles")} />
+              <SettingsRow icon="user-plus" label="Add Member" onPress={() => router.push("/create-profile")} />
             </View>
           </View>
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
             <View style={styles.settingsGroup}>
-              <SettingsRow icon="edit-2" label="Edit Profile" onPress={() => {}} />
-              <SettingsRow icon="lock" label="Change Password" onPress={() => {}} />
               <SettingsRow icon="log-out" label="Sign Out" onPress={handleSignOut} danger />
             </View>
           </View>
