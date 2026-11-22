@@ -4,9 +4,9 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import Colors from "../../constants/colors";
@@ -57,7 +57,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={styles.safe} edges={["top"]}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.hero}>
             <View style={styles.bigAvatar}>

@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import Colors from "../../constants/colors";
 
 export default function RecipesScreen() {
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={styles.safe} edges={["top"]}>
         <View style={styles.content}>
           <View style={styles.iconWrap}>
             <Feather name="book-open" size={32} color={Colors.accentText} />
