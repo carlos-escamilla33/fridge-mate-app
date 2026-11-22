@@ -18,8 +18,8 @@ const PALETTES = {
   },
 };
 
-// variant: 'fawn' | 'brindle'. happy: tongue out.
-export function pugSvg(variant = 'fawn', happy = false) {
+// Inner SVG markup for a pug head in a 120x120 box. variant: 'fawn' | 'brindle'. happy: tongue out.
+function pugShapes(variant = 'fawn', happy = false) {
   const p = PALETTES[variant] ?? PALETTES.fawn;
   const clipId = `pug-head-${variant}`;
 
@@ -42,7 +42,7 @@ export function pugSvg(variant = 'fawn', happy = false) {
     <path d="M60 89 v5" stroke="#D96A82" stroke-width="1.2" stroke-linecap="round" />`
     : '';
 
-  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  return `
   <defs>
     <clipPath id="${clipId}">
       <ellipse cx="60" cy="64" rx="44" ry="40" />
@@ -73,6 +73,30 @@ export function pugSvg(variant = 'fawn', happy = false) {
   <ellipse cx="57" cy="73" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.35" />
 
   ${tongue}
-  <path d="M60 81 v5 M50 86 q5 5 10 0 q5 5 10 0" stroke="#5A4A41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M60 81 v5 M50 86 q5 5 10 0 q5 5 10 0" stroke="#5A4A41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />`;
+}
+
+export function pugSvg(variant = 'fawn', happy = false) {
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">${pugShapes(variant, happy)}
+</svg>`;
+}
+
+// App logo: a fawn pug peeking over the top of a fridge, on a caramel tile.
+// cornerRadius: rounded tile for in-app use; 0 for the app icon (iOS rounds it itself).
+export function logoSvg(cornerRadius = 26) {
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="120" rx="${cornerRadius}" fill="#9A5F33" />
+
+  <rect x="31" y="46" width="58" height="62" rx="9" fill="#FBF7F1" />
+  <path d="M31 70 H89" stroke="#E2CDB3" stroke-width="2.5" />
+  <rect x="38" y="57" width="4.5" height="9" rx="2.25" fill="#9A5F33" />
+  <rect x="38" y="76" width="4.5" height="18" rx="2.25" fill="#9A5F33" />
+
+  <g transform="translate(30 6) scale(0.5)">${pugShapes('fawn', false)}
+  </g>
+
+  <ellipse cx="41" cy="49" rx="6.5" ry="4.5" fill="${PALETTES.fawn.coat}" />
+  <ellipse cx="79" cy="49" rx="6.5" ry="4.5" fill="${PALETTES.fawn.coat}" />
+  <path d="M38.5 47.5 v3 M41.5 47.5 v3 M76.5 47.5 v3 M79.5 47.5 v3" stroke="${PALETTES.fawn.wrinkle}" stroke-width="1" stroke-linecap="round" />
 </svg>`;
 }
