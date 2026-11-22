@@ -8,14 +8,23 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Colors from "../../constants/colors";
+import { useAuth } from "../../context/AuthContext";
+import { scanFoodPhoto } from "../../api/items";
 
 const CATEGORIES = ["Produce", "Dairy", "Meat", "Seafood", "Grains", "Drinks", "Snacks", "Other"];
+
+// Claude doesn't benefit from images larger than this, and smaller uploads are faster.
+const MAX_IMAGE_SIDE = 1568;
 
 export default function AddItemScreen() {
   const [name, setName] = useState("");
@@ -25,6 +34,61 @@ export default function AddItemScreen() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanError, setScanError] = useState("");
+  const { token } = useAuth();
+
+  function handleScanPress() {
+    Alert.alert("Scan food", "Take a photo of your groceries or the inside of your fridge.", [
+      { text: "Take Photo", onPress: () => pickAndScan("camera") },
+      { text: "Choose from Library", onPress: () => pickAndScan("library") },
+      { text: "Cancel", style: "cancel" },
+    ]);
+  }
+
+  async function pickAndScan(source) {
+    setScanError("");
+
+    let result;
+    if (source === "camera") {
+      const permission = await ImagePicker.requestCameraPermissionsAsync();
+      if (!permission.granted) {
+        setScanError("Camera access is needed to scan. You can turn it on in Settings.");
+        return;
+      }
+      result = await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+    } else {
+      result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+    }
+
+    if (result.canceled) return;
+
+    setScanning(true);
+    try {
+      const photo = result.assets[0];
+      const resize = photo.width >= photo.height ? { width: MAX_IMAGE_SIDE } : { height: MAX_IMAGE_SIDE };
+      const needsResize = Math.max(photo.width, photo.height) > MAX_IMAGE_SIDE;
+
+      const resized = await ImageManipulator.manipulateAsync(
+        photo.uri,
+        needsResize ? [{ resize }] : [],
+        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG, base64: true }
+      );
+
+      const items = await scanFoodPhoto(token, resized.base64);
+
+      if (items.length === 0) {
+        setScanError("No food found in that photo. Try getting closer or better lighting.");
+        return;
+      }
+
+      router.push({ pathname: "/scan-review", params: { items: JSON.stringify(items) } });
+    } catch (err) {
+      setScanError(err.message ?? "Scan failed. Try again.");
+    } finally {
+      setScanning(false);
+    }
+  }
 
   function validate() {
     const e = {};
@@ -79,13 +143,31 @@ export default function AddItemScreen() {
             <View style={{ width: 20 }} />
           </View>
 
-          <TouchableOpacity style={styles.scanZone} activeOpacity={0.75}>
+          <TouchableOpacity
+            style={styles.scanZone}
+            activeOpacity={0.75}
+            onPress={handleScanPress}
+            disabled={scanning}
+          >
             <View style={styles.scanIconWrap}>
-              <Feather name="camera" size={26} color={Colors.textSecondary} />
+              {scanning ? (
+                <ActivityIndicator size="small" color={Colors.accent} />
+              ) : (
+                <Feather name="camera" size={26} color={Colors.textSecondary} />
+              )}
             </View>
-            <Text style={styles.scanTitle}>Scan item or receipt</Text>
-            <Text style={styles.scanSubtitle}>AI will identify and estimate expiry</Text>
+            <Text style={styles.scanTitle}>{scanning ? "Identifying food..." : "Scan your groceries"}</Text>
+            <Text style={styles.scanSubtitle}>
+              {scanning ? "This takes a few seconds" : "AI will identify items and estimate expiry"}
+            </Text>
           </TouchableOpacity>
+
+          {scanError ? (
+            <View style={styles.scanErrorBanner}>
+              <Feather name="alert-circle" size={16} color={Colors.dangerText} />
+              <Text style={styles.scanErrorText}>{scanError}</Text>
+            </View>
+          ) : null}
 
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
@@ -220,6 +302,21 @@ const styles = StyleSheet.create({
   scanSubtitle: {
     fontSize: 12,
     color: Colors.textSecondary,
+  },
+  scanErrorBanner: {
+    backgroundColor: Colors.dangerBg,
+    borderRadius: 12,
+    padding: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: -12,
+    marginBottom: 20,
+  },
+  scanErrorText: {
+    flex: 1,
+    fontSize: 13,
+    color: Colors.dangerText,
   },
   divider: {
     flexDirection: "row",
