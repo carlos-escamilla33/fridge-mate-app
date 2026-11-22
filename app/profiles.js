@@ -14,9 +14,7 @@ import { router } from "expo-router";
 import { useAccount } from "../context/AccountContext";
 import Colors from "../constants/colors";
 
-const AVATAR_COLORS = [
-  '#10B981', '#3B82F6', '#F59E0B', '#8B5CF6', '#EF4444',
-];
+const AVATAR_COLORS = Colors.avatars;
 
 export default function ProfilesScreen() {
   const { members, fetchMembers, isLoading, selectMember } = useAccount();

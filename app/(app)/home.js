@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   expiryBanner: {
     backgroundColor: Colors.warnBg,
     borderWidth: 1,
-    borderColor: '#FDE68A',
+    borderColor: Colors.warnBorder,
     borderRadius: 12,
     padding: 12,
     flexDirection: "row",

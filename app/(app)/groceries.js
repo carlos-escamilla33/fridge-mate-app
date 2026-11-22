@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
   suggestionCard: {
     backgroundColor: Colors.warnBg,
     borderWidth: 1,
-    borderColor: "#FDE68A",
+    borderColor: Colors.warnBorder,
     borderRadius: 14,
     padding: 14,
     flexDirection: "row",

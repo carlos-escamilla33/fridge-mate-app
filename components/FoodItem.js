@@ -1,16 +1,11 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Colors from '../constants/colors';
 
-const CATEGORY_COLORS = {
-  Dairy: '#3B82F6',
-  Produce: '#10B981',
-  Meat: '#EF4444',
-  Seafood: '#06B6D4',
-  Grains: '#F59E0B',
-  Drinks: '#8B5CF6',
-  Snacks: '#F97316',
-  Other: '#6B7280',
-};
+// Items have no category, so pick a stable warm color from the item name.
+function tileColor(name = '') {
+  const sum = [...name].reduce((total, ch) => total + ch.charCodeAt(0), 0);
+  return Colors.avatars[sum % Colors.avatars.length];
+}
 
 function getExpiryInfo(expiryDate) {
   const today = new Date();
@@ -28,7 +23,7 @@ function getExpiryInfo(expiryDate) {
 
 export default function FoodItem({ item, onPress }) {
   const expiry = getExpiryInfo(item.expiryDate);
-  const color = CATEGORY_COLORS[item.category] ?? CATEGORY_COLORS.Other;
+  const color = tileColor(item.name);
   const initial = item.name ? item.name[0].toUpperCase() : '?';
 
   const pillStyle =

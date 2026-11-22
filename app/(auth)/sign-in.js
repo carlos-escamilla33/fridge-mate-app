@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   errorBanner: {
     backgroundColor: Colors.dangerBg,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: Colors.dangerBorder,
     borderRadius: 10,
     padding: 12,
     marginBottom: 12,
