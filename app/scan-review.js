@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import Button from "../components/Button";
+import Pug from "../components/Pug";
 import Input from "../components/Input";
 import Colors from "../constants/colors";
 import { useAuth } from "../context/AuthContext";
@@ -44,6 +45,7 @@ export default function ScanReviewScreen() {
   const [errors, setErrors] = useState({});
   const [saveError, setSaveError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
 
   const totalCount = rows.reduce((sum, row) => sum + row.quantity, 0);
 
@@ -91,10 +93,11 @@ export default function ScanReviewScreen() {
         ...(row.fromScan && photo ? { image: photo.base64 } : {}),
       }));
       await createItemsBulk(token, activeMember.id, items);
-      router.replace("/(app)/home");
+      setSaving(false);
+      setSavedCount(totalCount);
+      setTimeout(() => router.replace("/(app)/home"), 1500);
     } catch (err) {
       setSaveError(err.message ?? "Could not save items. Try again.");
-    } finally {
       setSaving(false);
     }
   }
@@ -200,13 +203,22 @@ export default function ScanReviewScreen() {
             </View>
           ) : null}
 
-          <Button
-            label={totalCount === 1 ? "Add 1 Item to Fridge" : `Add ${totalCount} Items to Fridge`}
-            onPress={handleSave}
-            loading={saving}
-            disabled={rows.length === 0}
-            style={styles.submitBtn}
-          />
+          {savedCount > 0 ? (
+            <View style={styles.successCard}>
+              <Pug variant="brindle" happy size={72} />
+              <Text style={styles.successText}>
+                {savedCount === 1 ? "Added 1 item to your fridge!" : `Added ${savedCount} items to your fridge!`}
+              </Text>
+            </View>
+          ) : (
+            <Button
+              label={totalCount === 1 ? "Add 1 Item to Fridge" : `Add ${totalCount} Items to Fridge`}
+              onPress={handleSave}
+              loading={saving}
+              disabled={rows.length === 0}
+              style={styles.submitBtn}
+            />
+          )}
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -339,6 +351,19 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     color: Colors.dangerText,
+  },
+  successCard: {
+    backgroundColor: Colors.successBg,
+    borderRadius: 16,
+    padding: 16,
+    alignItems: "center",
+    gap: 8,
+    marginTop: 4,
+  },
+  successText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: Colors.successText,
   },
   submitBtn: {
     marginTop: 4,
