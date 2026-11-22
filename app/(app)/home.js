@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
 import { fetchItems } from "../../api/items";
@@ -172,7 +172,7 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>Expiring Soon</Text>
               <View style={styles.itemList}>
                 {expiringItems.map((item) => (
-                  <FoodItem key={item.id} item={item} />
+                  <FoodItem key={item.id} item={item} onPress={() => router.push(`/item/${item.id}`)} />
                 ))}
               </View>
             </View>
@@ -183,7 +183,7 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>Fresh</Text>
               <View style={styles.itemList}>
                 {freshItems.map((item) => (
-                  <FoodItem key={item.id} item={item} />
+                  <FoodItem key={item.id} item={item} onPress={() => router.push(`/item/${item.id}`)} />
                 ))}
               </View>
             </View>
