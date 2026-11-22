@@ -15,6 +15,7 @@ import { useAccount } from "../../context/AccountContext";
 import { fetchItems, itemImageSource } from "../../api/items";
 import { parseDateOnly } from "../../utils/dates";
 import FoodItem from "../../components/FoodItem";
+import Pug from "../../components/Pug";
 import Colors from "../../constants/colors";
 
 // Backend item rows use item_id / food_name / expiration_date; FoodItem expects id / name / expiryDate.
@@ -193,9 +194,7 @@ export default function HomeScreen() {
 
           {!loading && !loadError && filteredItems.length === 0 && (
             <View style={styles.empty}>
-              <View style={styles.emptyIcon}>
-                <Text style={styles.emptyIconText}>?</Text>
-              </View>
+              <Pug variant="fawn" size={96} />
               <Text style={styles.emptyText}>Nothing here yet.</Text>
               <Text style={styles.emptySubtext}>Tap Add to add your first item.</Text>
             </View>
@@ -339,20 +338,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 80,
     gap: 8,
-  },
-  emptyIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    backgroundColor: Colors.borderLight,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
-  },
-  emptyIconText: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: Colors.textMuted,
   },
   emptyText: {
     fontSize: 17,

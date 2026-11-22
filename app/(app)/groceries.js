@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import Colors from "../../constants/colors";
+import Pug from "../../components/Pug";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
 import { fetchItems, dismissGrocerySuggestion } from "../../api/items";
@@ -281,9 +282,7 @@ export default function GroceriesScreen() {
 
               {groceries.length === 0 && suggestions.length === 0 && (
                 <View style={styles.empty}>
-                  <View style={styles.emptyIcon}>
-                    <Feather name="shopping-cart" size={24} color={Colors.textMuted} />
-                  </View>
+                  <Pug variant="brindle" size={96} />
                   <Text style={styles.emptyText}>Your list is empty.</Text>
                   <Text style={styles.emptySubtext}>
                     Items about to expire will show up here as suggestions.
@@ -488,15 +487,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 60,
     gap: 8,
-  },
-  emptyIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    backgroundColor: Colors.borderLight,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
   },
   emptyText: {
     fontSize: 17,
