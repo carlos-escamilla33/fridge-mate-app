@@ -16,6 +16,7 @@ import { Feather } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import Colors from "../../constants/colors";
 import Pug from "../../components/Pug";
+import SwipeToDelete from "../../components/SwipeToDelete";
 import { useAuth } from "../../context/AuthContext";
 import { useAccount } from "../../context/AccountContext";
 import { fetchItems, dismissGrocerySuggestion } from "../../api/items";
@@ -258,7 +259,9 @@ export default function GroceriesScreen() {
                   <Text style={styles.sectionTitle}>To Buy</Text>
                   <View style={styles.list}>
                     {toBuy.map((g) => (
-                      <GroceryRow key={g.grocery_item_id} grocery={g} onToggle={handleToggle} onRemove={handleRemove} />
+                      <SwipeToDelete key={g.grocery_item_id} onDelete={() => handleRemove(g)}>
+                        <GroceryRow grocery={g} onToggle={handleToggle} onRemove={handleRemove} />
+                      </SwipeToDelete>
                     ))}
                   </View>
                 </View>
@@ -274,7 +277,9 @@ export default function GroceriesScreen() {
                   </View>
                   <View style={styles.list}>
                     {checked.map((g) => (
-                      <GroceryRow key={g.grocery_item_id} grocery={g} onToggle={handleToggle} onRemove={handleRemove} />
+                      <SwipeToDelete key={g.grocery_item_id} onDelete={() => handleRemove(g)}>
+                        <GroceryRow grocery={g} onToggle={handleToggle} onRemove={handleRemove} />
+                      </SwipeToDelete>
                     ))}
                   </View>
                 </View>
